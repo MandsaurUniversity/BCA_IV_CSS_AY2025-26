@@ -34,48 +34,61 @@ Week 6 is dedicated to:
 
 ---
 
-### Section B: Program Structure (25 points)
-**Covering Week 2 Concepts (CO2)**
+### Section B: Program Structure & Functions (25 points)
+**Covering Week 2-3 Concepts (CO2, CO4)**
 
-- Write conditional statements
-- Implement loops correctly
-- Define and call functions
-- Understand scope
+- Write conditional statements and loops
+- Understand scope (global, function, block)
+- Explain closures and demonstrate memoization
+- Differentiate function declarations vs expressions (hoisting)
+- Use recursion with base and recursive cases
+- Apply rest parameters and default parameters
+- Trace the call stack for nested function calls
 
 **Sample Questions:**
-- Debug a faulty for loop
-- Explain function scope with examples
-- Implement a number guessing game
+- Trace the call stack for a recursive factorial(4) call
+- Write a closure that creates a counter function
+- Explain the difference between rest parameters and spread operator
+- What is the output of calling a hoisted function declaration vs a function expression?
 
 ---
 
-### Section C: Data Structures (25 points)
+### Section C: Data Structures & Higher-Order Functions (25 points)
 **Covering Weeks 3-4 Concepts (CO3, CO4)**
 
-- Manipulate arrays
-- Work with objects
-- Use array methods
-- Transform data with map/filter
+- Manipulate arrays with advanced methods (slice, find, some, every)
+- Understand object mutability, references vs values
+- Transform data with map(), filter(), reduce()
+- Explain abstraction and compose functions
+- Work with character codes (charCodeAt, codePointAt)
+- Analyze data sets using higher-order functions
+- Compute correlation using arrays and objects
 
 **Sample Questions:**
-- Filter students above 80 marks
-- Implement a reduce() solution
-- Sort array of objects
+- Use reduce() to group an array of objects by a property
+- Explain why modifying a shallow copy can affect the original object
+- Write a composable pipeline that filters, transforms, and aggregates data
+- Use character codes to implement a simple cipher
 
 ---
 
 ### Section D: OOP & Advanced (25 points)
 **Covering Week 5 Concepts (CO5)**
 
-- Create and extend classes
-- Implement polymorphism
-- Validate data types
-- Handle files/extensions
+- Explain the prototype chain and how classes use prototypes
+- Use getters and setters to control property access
+- Declare truly private fields with `#`
+- Differentiate Maps from plain objects
+- Create and use Symbols as unique property keys
+- Implement the iterator interface (`Symbol.iterator`, `next()`)
+- Apply `instanceof` to check type hierarchies
+- Override derived properties in child classes
 
 **Sample Questions:**
-- Design a class hierarchy
-- Implement inheritance properly
-- Write type validation
+- Trace the prototype chain for an instance of a child class
+- Create a class with getters, setters, and private # fields
+- Implement a custom iterable class that works with for...of
+- When would you use a Map instead of a plain object?
 
 ---
 
