@@ -46,6 +46,54 @@ dog.speak();  // Buddy barks: Woof!
 dog.move();   // Buddy is moving (from parent)
 ```
 
+#### Overriding Derived Properties
+
+When a child class defines a method with the same name as the parent class, the child's version **overrides** (replaces) the parent's version. This is called **overriding derived properties**. The term "derived" means the child class is "derived from" (based on) the parent.
+
+**How property lookup works with inheritance:**
+
+```
+dog (Dog instance)  →  Dog.prototype  →  Animal.prototype  →  Object.prototype
+  name: "Buddy"        speak()            speak()              toString()
+  breed: "Golden..."                       move()
+```
+
+When you call `dog.speak()`, JavaScript:
+1. Checks `dog` — no `speak` method on the instance itself
+2. Checks `Dog.prototype` — found `speak()`! Uses this one.
+3. `Animal.prototype.speak()` is **never reached** because the lookup stopped at step 2.
+
+This is why `Dog.speak()` **overrides** `Animal.speak()` — it appears earlier in the prototype chain.
+
+```javascript
+class Animal {
+    toString() {
+        return "an animal";
+    }
+}
+
+class Rabbit extends Animal {
+    toString() {
+        return "a rabbit";  // Overrides Animal's toString
+    }
+}
+
+const r = new Rabbit();
+console.log(r.toString());  // "a rabbit" — Rabbit's version, not Animal's
+
+// You can still call the parent version using super:
+class Dog extends Animal {
+    toString() {
+        return super.toString() + " (specifically a dog)";
+    }
+}
+
+const d = new Dog();
+console.log(d.toString());  // "an animal (specifically a dog)"
+```
+
+> **Key point:** Overriding is not destructive — the parent class method still exists, and other instances of the parent class continue to use it. Only instances of the child class see the overridden version.
+
 ---
 
 ### 2. super Keyword
@@ -133,7 +181,9 @@ for (let shape of shapes) {
 
 ---
 
-### 4. isinstance and Properties
+### 4. The instanceof Operator
+
+The **`instanceof`** operator tests whether an object was created by a particular class (or any class in its inheritance chain). It returns `true` or `false`.
 
 ```javascript
 class Employee {
@@ -156,9 +206,51 @@ const mgr = new Manager("Bob", 80000, "IT");
 console.log(emp instanceof Employee);  // true
 console.log(emp instanceof Manager);   // false
 
-console.log(mgr instanceof Employee);  // true (managers are employees)
+console.log(mgr instanceof Employee);  // true  ← managers ARE employees (through inheritance)
 console.log(mgr instanceof Manager);   // true
 ```
+
+#### How instanceof Works
+
+`instanceof` checks the **prototype chain**. It asks: "Does the class's `.prototype` property appear anywhere in the object's prototype chain?"
+
+```javascript
+// These are equivalent:
+console.log(mgr instanceof Employee);
+// Same as asking: does Employee.prototype appear in mgr's prototype chain?
+
+// Built-in types work too:
+console.log([1, 2, 3] instanceof Array);    // true
+console.log([1, 2, 3] instanceof Object);   // true (arrays inherit from Object)
+console.log("hello" instanceof String);     // false (string primitives are not objects)
+console.log(new String("hello") instanceof String); // true (String object wrapper)
+```
+
+#### Practical Use: Type Checking in Functions
+
+```javascript
+function processInput(input) {
+    if (input instanceof Array) {
+        return "Array with " + input.length + " elements";
+    } else if (input instanceof Date) {
+        return "Date: " + input.toDateString();
+    } else if (input instanceof Error) {
+        return "Error: " + input.message;
+    } else {
+        return "Unknown type: " + typeof input;
+    }
+}
+
+console.log(processInput([1, 2, 3]));          // "Array with 3 elements"
+console.log(processInput(new Date()));          // "Date: ..."
+console.log(processInput(new Error("oops")));  // "Error: oops"
+console.log(processInput(42));                  // "Unknown type: number"
+```
+
+> **`instanceof` vs `typeof`:**
+> - `typeof` tells you the primitive type: `"string"`, `"number"`, `"boolean"`, `"object"`, `"function"`, `"undefined"`
+> - `instanceof` tells you if an object belongs to a specific class hierarchy
+> - For arrays, `typeof` returns `"object"` (unhelpful), while `instanceof Array` returns `true`
 
 ---
 
@@ -204,6 +296,196 @@ for (let processor of processors) {
     processor.process();
 }
 ```
+
+---
+
+### 6. Symbols
+
+A **Symbol** is a primitive data type (like number, string, or boolean) that is guaranteed to be **unique**. Every Symbol you create is different from every other Symbol, even if they have the same description.
+
+Symbols are primarily used as **property keys** — when you need a property name that will never accidentally conflict with any other property name.
+
+```javascript
+// Creating Symbols
+const sym1 = Symbol("description");
+const sym2 = Symbol("description");
+
+console.log(sym1 === sym2);   // false — every Symbol is unique!
+console.log(typeof sym1);     // "symbol"
+```
+
+#### Using Symbols as Property Keys
+
+```javascript
+const SECRET_ID = Symbol("id");
+
+const user = {
+    name: "Alice",
+    [SECRET_ID]: 12345   // Symbol as property key (use bracket notation)
+};
+
+console.log(user.name);         // "Alice"
+console.log(user[SECRET_ID]);   // 12345
+
+// Symbol properties don't show up in normal iteration:
+console.log(Object.keys(user));  // ["name"]  — no Symbol!
+
+// But you can find them with:
+console.log(Object.getOwnPropertySymbols(user));  // [Symbol(id)]
+```
+
+#### Symbol.for() — Global Symbols
+
+`Symbol.for(key)` looks up an existing Symbol with the given key in a global registry. If it doesn't exist, it creates one. This lets you share Symbols across different parts of your code:
+
+```javascript
+const id1 = Symbol.for("app.id");
+const id2 = Symbol.for("app.id");
+
+console.log(id1 === id2);  // true — same Symbol from the global registry!
+
+// Regular Symbol() always creates new:
+const id3 = Symbol("app.id");
+console.log(id1 === id3);  // false — different Symbol
+```
+
+#### Well-Known Symbols
+
+JavaScript has built-in Symbols (called **well-known Symbols**) that let you customize how objects behave with built-in operations. The most important one for this course is `Symbol.iterator` (covered next).
+
+```javascript
+// Symbol.toPrimitive — customize type conversion
+class Money {
+    constructor(amount, currency) {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+    [Symbol.toPrimitive](hint) {
+        if (hint === "number") return this.amount;
+        if (hint === "string") return `${this.amount} ${this.currency}`;
+        return this.amount;
+    }
+}
+
+const price = new Money(100, "INR");
+console.log(+price);        // 100       (number hint)
+console.log(`${price}`);    // "100 INR" (string hint)
+console.log(price + 50);    // 150       (default hint → number)
+```
+
+---
+
+### 7. The Iterator Interface
+
+An **iterator** is an object that provides a way to access elements one at a time, in sequence. The **iterator interface** is the protocol (set of rules) that JavaScript uses to make objects work with `for...of` loops and the spread operator `[...obj]`.
+
+#### How Iteration Works
+
+When you write `for (let x of arr)`, JavaScript does this behind the scenes:
+
+1. Calls `arr[Symbol.iterator]()` to get an **iterator object**
+2. Repeatedly calls `iterator.next()` on that object
+3. Each call to `next()` returns an object with two properties:
+   - `value` — the current element
+   - `done` — `true` if there are no more elements, `false` otherwise
+4. The loop stops when `done` is `true`
+
+```javascript
+// Manually using the iterator interface on an array:
+const arr = ["a", "b", "c"];
+
+const iterator = arr[Symbol.iterator]();  // Step 1: get iterator
+
+console.log(iterator.next());  // { value: "a", done: false }
+console.log(iterator.next());  // { value: "b", done: false }
+console.log(iterator.next());  // { value: "c", done: false }
+console.log(iterator.next());  // { value: undefined, done: true }
+
+// This is exactly what for...of does automatically:
+for (let item of arr) {
+    console.log(item);  // "a", "b", "c"
+}
+```
+
+#### Creating a Custom Iterable
+
+You can make **any** object iterable by defining a `[Symbol.iterator]()` method on it. This method must return an object with a `next()` method:
+
+```javascript
+class Range {
+    constructor(from, to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    // Make Range iterable
+    [Symbol.iterator]() {
+        let current = this.from;
+        const last = this.to;
+
+        return {
+            next() {
+                if (current <= last) {
+                    return { value: current++, done: false };
+                } else {
+                    return { value: undefined, done: true };
+                }
+            }
+        };
+    }
+}
+
+// Now Range works with for...of:
+const range = new Range(1, 5);
+
+for (let num of range) {
+    console.log(num);  // 1, 2, 3, 4, 5
+}
+
+// And with spread operator:
+console.log([...new Range(3, 7)]);  // [3, 4, 5, 6, 7]
+
+// And with destructuring:
+const [first, second, third] = new Range(10, 20);
+console.log(first, second, third);  // 10 11 12
+```
+
+#### Practical Example: Linked List Iterator
+
+```javascript
+class LinkedList {
+    constructor(value, rest = null) {
+        this.value = value;
+        this.rest = rest;
+    }
+
+    [Symbol.iterator]() {
+        let current = this;
+        return {
+            next() {
+                if (current === null) {
+                    return { done: true };
+                }
+                const value = current.value;
+                current = current.rest;
+                return { value, done: false };
+            }
+        };
+    }
+}
+
+// Build a linked list: 1 → 2 → 3
+const list = new LinkedList(1, new LinkedList(2, new LinkedList(3)));
+
+for (let value of list) {
+    console.log(value);  // 1, 2, 3
+}
+
+console.log([...list]);  // [1, 2, 3]
+```
+
+> **Why iterators matter:** The iterator interface is what makes JavaScript's `for...of` loop work with arrays, strings, Maps, Sets, and any custom object. By implementing `[Symbol.iterator]()`, your classes can integrate seamlessly with the language's built-in features — this is a real-world example of **polymorphism**: different objects, same interface.
 
 ---
 
@@ -630,9 +912,12 @@ mage.heal(20);
 ✅ **extends keyword for inheritance**
 ✅ **super() calls parent constructor**
 ✅ **super.method() calls parent method**
-✅ **Polymorphism allows overriding methods**
-✅ **instanceof checks object type**
-✅ **Inheritance creates hierarchies**
+✅ **Overriding replaces parent methods in child classes**
+✅ **Polymorphism allows different behavior through same interface**
+✅ **instanceof checks object type through the prototype chain**
+✅ **Symbols are unique, collision-free property keys**
+✅ **The iterator interface (`Symbol.iterator` + `next()`) enables `for...of`**
+✅ **Custom iterables integrate with spread, destructuring, and loops**
 
 ---
 

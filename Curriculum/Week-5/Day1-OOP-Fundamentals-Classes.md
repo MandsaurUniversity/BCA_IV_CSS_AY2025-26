@@ -93,6 +93,108 @@ console.log(myCar.getDescription());  // Toyota Camry (2023)
 
 ---
 
+### 2B. Prototypes: What's Under the Hood
+
+JavaScript classes are **syntactic sugar** — a nicer way to write something that already existed. Behind every class is a mechanism called **prototypes**. Understanding prototypes helps you understand how JavaScript objects actually work.
+
+#### What is a Prototype?
+
+Every JavaScript object has a hidden link to another object called its **prototype**. When you try to access a property or method on an object and it doesn't exist on that object, JavaScript looks at the object's prototype. If it's not there either, it looks at the prototype's prototype, and so on. This chain of lookups is called the **prototype chain**.
+
+```javascript
+// Create a simple object
+const rabbit = {
+    speak(line) {
+        console.log(`The rabbit says '${line}'`);
+    }
+};
+
+// Create another object whose prototype is rabbit
+const whiteRabbit = Object.create(rabbit);
+whiteRabbit.color = "white";
+
+whiteRabbit.speak("I'm late!");  // The rabbit says 'I'm late!'
+// whiteRabbit doesn't have a speak method,
+// but its prototype (rabbit) does, so that one is used.
+
+console.log(whiteRabbit.color);  // "white" — own property
+```
+
+#### Object.create()
+
+`Object.create(proto)` creates a new object with `proto` as its prototype:
+
+```javascript
+const personProto = {
+    greet() {
+        return "Hello, I'm " + this.name;
+    }
+};
+
+const alice = Object.create(personProto);
+alice.name = "Alice";
+console.log(alice.greet());  // "Hello, I'm Alice"
+
+const bob = Object.create(personProto);
+bob.name = "Bob";
+console.log(bob.greet());    // "Hello, I'm Bob"
+```
+
+#### Object.getPrototypeOf()
+
+You can inspect an object's prototype:
+
+```javascript
+console.log(Object.getPrototypeOf(alice) === personProto);  // true
+
+// Arrays have Array.prototype as their prototype
+const arr = [1, 2, 3];
+console.log(Object.getPrototypeOf(arr) === Array.prototype);  // true
+
+// Array.prototype itself inherits from Object.prototype
+console.log(Object.getPrototypeOf(Array.prototype) === Object.prototype);  // true
+```
+
+#### How Classes Use Prototypes
+
+When you write a `class`, JavaScript puts the methods on the prototype automatically:
+
+```javascript
+class Dog {
+    constructor(name) {
+        this.name = name;  // Own property — stored on each instance
+    }
+    bark() {
+        console.log(this.name + " says Woof!");  // On Dog.prototype
+    }
+}
+
+const rex = new Dog("Rex");
+rex.bark();  // "Rex says Woof!"
+
+// The bark method is on the prototype, not on rex:
+console.log(rex.hasOwnProperty("name"));  // true  — own property
+console.log(rex.hasOwnProperty("bark"));  // false — not own, it's on prototype
+console.log(Object.getPrototypeOf(rex) === Dog.prototype);  // true
+```
+
+#### The Prototype Chain (Visual)
+
+```
+rex (instance)       → Dog.prototype         → Object.prototype → null
+  name: "Rex"           bark: function()        toString: function()
+                                                 hasOwnProperty: function()
+```
+
+When you call `rex.toString()`, JavaScript:
+1. Checks `rex` — no `toString` found
+2. Checks `Dog.prototype` — no `toString` found
+3. Checks `Object.prototype` — found! Uses it.
+
+> **Key takeaway:** Classes are a clean syntax for creating objects that share methods via their prototype. Understanding prototypes helps you debug unexpected behavior (like why a method exists on an object even though you didn't define it there).
+
+---
+
 ### 3. Constructor and this Keyword
 
 The **constructor** is called when creating a new instance.  
@@ -177,6 +279,240 @@ console.log(account.getBalance());  // 12000
 // Even though _balance looks private, it can still be accessed
 // The convention is a contract: don't access it directly
 ```
+
+---
+
+### 4B. Getters and Setters
+
+**Getters** and **setters** are special methods that allow you to define how a property is accessed (read) and modified (written). They look like properties from the outside but run code when used.
+
+- A **getter** runs when you **read** a property's value
+- A **setter** runs when you **assign** a value to a property
+
+```javascript
+class Temperature {
+    constructor(celsius) {
+        this._celsius = celsius;  // Store in a backing property
+    }
+
+    // Getter — called when you read temperature.fahrenheit
+    get fahrenheit() {
+        return this._celsius * 9 / 5 + 32;
+    }
+
+    // Setter — called when you assign temperature.fahrenheit = value
+    set fahrenheit(value) {
+        this._celsius = (value - 32) * 5 / 9;
+    }
+
+    // Getter for celsius
+    get celsius() {
+        return this._celsius;
+    }
+
+    set celsius(value) {
+        if (value < -273.15) {
+            console.log("Temperature cannot be below absolute zero!");
+            return;
+        }
+        this._celsius = value;
+    }
+}
+
+const temp = new Temperature(25);
+console.log(temp.celsius);      // 25     — calls the getter
+console.log(temp.fahrenheit);   // 77     — calls the getter, computes on the fly
+
+temp.fahrenheit = 100;          // Calls the setter — converts and stores in celsius
+console.log(temp.celsius);      // 37.78  — the converted value
+
+temp.celsius = -300;            // "Temperature cannot be below absolute zero!"
+console.log(temp.celsius);      // 37.78  — unchanged because setter rejected it
+```
+
+#### Getters in Plain Objects
+
+You can also use getters and setters in regular object literals:
+
+```javascript
+const person = {
+    firstName: "Alice",
+    lastName: "Johnson",
+
+    get fullName() {
+        return this.firstName + " " + this.lastName;
+    },
+
+    set fullName(value) {
+        const parts = value.split(" ");
+        this.firstName = parts[0];
+        this.lastName = parts[1];
+    }
+};
+
+console.log(person.fullName);         // "Alice Johnson"
+person.fullName = "Bob Smith";
+console.log(person.firstName);        // "Bob"
+console.log(person.lastName);         // "Smith"
+```
+
+> **When to use getters/setters:**
+> - To compute a value on the fly (like `fahrenheit` from `celsius`)
+> - To validate data before setting it (like preventing negative temperatures)
+> - To log or track when a property is read or changed
+> - To provide a clean interface where computed properties look like simple values
+
+---
+
+### 4C. True Private Fields with `#`
+
+The `_` prefix convention (like `this._balance`) is just a naming agreement — the property can still be accessed from outside. JavaScript now supports **truly private fields** using the `#` prefix. Private fields **cannot** be accessed from outside the class at all.
+
+```javascript
+class BankAccountSecure {
+    // Declare private fields
+    #balance;
+    #pin;
+
+    constructor(accountHolder, initialBalance, pin) {
+        this.accountHolder = accountHolder;  // Public
+        this.#balance = initialBalance;       // Private
+        this.#pin = pin;                      // Private
+    }
+
+    // Public method — controlled access
+    deposit(amount) {
+        if (amount > 0) {
+            this.#balance += amount;
+            return true;
+        }
+        return false;
+    }
+
+    withdraw(amount, pin) {
+        if (pin !== this.#pin) {
+            console.log("Incorrect PIN!");
+            return false;
+        }
+        if (amount > this.#balance) {
+            console.log("Insufficient funds!");
+            return false;
+        }
+        this.#balance -= amount;
+        return true;
+    }
+
+    getBalance(pin) {
+        if (pin !== this.#pin) return "Access denied";
+        return this.#balance;
+    }
+}
+
+const secure = new BankAccountSecure("Alice", 10000, 1234);
+secure.deposit(5000);
+console.log(secure.getBalance(1234));   // 15000
+console.log(secure.getBalance(0000));   // "Access denied"
+
+// Cannot access private fields:
+// console.log(secure.#balance);  // ❌ SyntaxError: Private field
+// console.log(secure.#pin);      // ❌ SyntaxError: Private field
+console.log(secure.accountHolder);  // ✅ "Alice" — public field works
+```
+
+> **`_` vs `#`:**
+> - `this._balance` — "please don't touch" (convention, still accessible)
+> - `this.#balance` — "you literally cannot touch" (enforced by the language)
+
+---
+
+### 4D. Maps (Data Structure)
+
+In Week 3, we learned that plain objects can be used as collections of key-value pairs. However, plain objects have limitations as data structures:
+- Keys can only be strings (or Symbols)
+- They inherit properties from `Object.prototype` (like `toString`), which can interfere
+- No easy way to know how many entries they have
+
+The **Map** data structure solves these problems. A **Map** is a collection of key-value pairs where keys can be **any type** — numbers, objects, functions, even other Maps.
+
+```javascript
+// Creating a Map
+const ages = new Map();
+
+// set() — add a key-value pair
+ages.set("Alice", 25);
+ages.set("Bob", 30);
+ages.set("Charlie", 35);
+
+// get() — retrieve a value by key
+console.log(ages.get("Alice"));    // 25
+console.log(ages.get("Unknown"));  // undefined
+
+// has() — check if a key exists
+console.log(ages.has("Bob"));      // true
+console.log(ages.has("Dave"));     // false
+
+// size — number of entries (not .length!)
+console.log(ages.size);            // 3
+
+// delete() — remove a key-value pair
+ages.delete("Charlie");
+console.log(ages.size);            // 2
+```
+
+#### Map vs Plain Object
+
+```javascript
+// ❌ Problem with plain objects as maps:
+const obj = {};
+obj["toString"] = "hello";
+// This shadows Object.prototype.toString — dangerous!
+
+// ✅ Map avoids this problem:
+const map = new Map();
+map.set("toString", "hello");
+// No conflict — "toString" is just data, not inherited behavior
+```
+
+#### Maps with Non-String Keys
+
+```javascript
+const data = new Map();
+
+// Numbers as keys
+data.set(1, "one");
+data.set(2, "two");
+
+// Objects as keys
+const user = { name: "Alice" };
+data.set(user, { role: "admin" });
+
+console.log(data.get(1));      // "one"
+console.log(data.get(user));   // { role: "admin" }
+```
+
+#### Iterating Over a Map
+
+```javascript
+const scores = new Map([
+    ["Alice", 95],
+    ["Bob", 87],
+    ["Charlie", 92]
+]);
+
+// Iterate entries
+for (let [name, score] of scores) {
+    console.log(name + ": " + score);
+}
+
+// Get keys and values separately
+console.log([...scores.keys()]);    // ["Alice", "Bob", "Charlie"]
+console.log([...scores.values()]);  // [95, 87, 92]
+```
+
+> **When to use Map vs Object:**
+> - Use **Object** when keys are known strings and match a fixed structure (like person.name, person.age)
+> - Use **Map** when keys are dynamic, unknown at write time, or are non-string types
+> - Use **Map** when you need to frequently add/remove key-value pairs or need `.size`
 
 ---
 
