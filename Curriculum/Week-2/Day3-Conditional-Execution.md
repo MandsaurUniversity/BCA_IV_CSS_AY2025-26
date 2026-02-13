@@ -182,6 +182,8 @@ if (hour < 12) {
 
 ### 5. Comparison Operators (Conditions)
 
+**Remainder**: The value left over after division. For example, when you divide 7 by 2, the result is 3 with a remainder of 1. In JavaScript, the `%` operator (called "modulus") gives you just the remainder part: `7 % 2` equals `1`.
+
 Conditions use comparison operators to return true/false:
 
 ```javascript
@@ -607,7 +609,113 @@ Check if customer can be seated:
 
 ---
 
-## 📖 Today's Learning Path
+## � Experiment 10: Find the Largest Among Three Numbers
+
+**Objective:** Use nested if-else statements to compare multiple values and find maximum  
+**Mandatory Practical Requirement:** Official Experiment #10 (Unit 2)  
+**Learning:** Complex conditional logic with multiple comparisons
+
+<details>
+  <summary><strong>Click to reveal solutions</strong></summary>
+
+### Method 1: Nested if-else Logic (Manual Comparison)
+
+```javascript
+// Experiment 10: Find the largest among three numbers
+// Method 1: Using nested if-else statements
+
+const num1 = 45;
+const num2 = 78;
+const num3 = 23;
+
+let largest;
+
+// Compare num1 with num2
+if (num1 > num2) {
+    // If num1 is larger, compare num1 with num3
+    if (num1 > num3) {
+        largest = num1;
+    } else {
+        largest = num3;
+    }
+} else {
+    // If num2 is larger, compare num2 with num3
+    if (num2 > num3) {
+        largest = num2;
+    } else {
+        largest = num3;
+    }
+}
+
+console.log("The largest number is: " + largest);
+
+// Example outputs:
+// The largest number is: 78
+// (when num1=45, num2=78, num3=23)
+```
+
+### Method 2: Using Math.max() (Smart Way)
+
+```javascript
+// Experiment 10: Find largest number using built-in function
+// Method 2: Using Math.max() for cleaner code
+
+const num1 = 45;
+const num2 = 78;
+const num3 = 23;
+
+const largest = Math.max(num1, num2, num3);
+
+console.log("The largest number is: " + largest);  // 78
+
+// Can also work with arrays:
+const numbers = [45, 78, 23, 56, 12];
+const max = Math.max(...numbers);  // Spread operator
+console.log("Maximum: " + max);    // 56
+```
+
+### Test Cases with Both Methods
+
+```javascript
+// Test Case 1: First number is largest
+console.log("Test 1: num1=100, num2=50, num3=75");
+const a1 = 100, b1 = 50, c1 = 75;
+let largest1;
+if (a1 > b1 && a1 > c1) largest1 = a1;
+else if (b1 > a1 && b1 > c1) largest1 = b1;
+else largest1 = c1;
+console.log("Result: " + largest1 + " (Expected: 100) ✓\n");
+
+// Test Case 2: Second number is largest
+console.log("Test 2: num1=30, num2=95, num3=60");
+const a2 = 30, b2 = 95, c2 = 60;
+let largest2;
+if (a2 > b2 && a2 > c2) largest2 = a2;
+else if (b2 > a2 && b2 > c2) largest2 = b2;
+else largest2 = c2;
+console.log("Result: " + largest2 + " (Expected: 95) ✓\n");
+
+// Test Case 3: Third number is largest
+console.log("Test 3: num1=40, num2=50, num3=99");
+const a3 = 40, b3 = 50, c3 = 99;
+let largest3;
+if (a3 > b3 && a3 > c3) largest3 = a3;
+else if (b3 > a3 && b3 > c3) largest3 = b3;
+else largest3 = c3;
+console.log("Result: " + largest3 + " (Expected: 99) ✓\n");
+
+// Using Math.max:
+console.log("Using Math.max():");
+console.log("Test 1: Math.max(100, 50, 75) = " + Math.max(100, 50, 75));
+console.log("Test 2: Math.max(30, 95, 60) = " + Math.max(30, 95, 60));
+console.log("Test 3: Math.max(40, 50, 99) = " + Math.max(40, 50, 99));
+```
+
+</details>
+
+---
+
+## �📖 Today's Learning Path
 
 **09:00-09:30 (30 min):** Theory - if/else Basics  
 **09:30-10:00 (30 min):** Theory - Comparison & Logical Operators  

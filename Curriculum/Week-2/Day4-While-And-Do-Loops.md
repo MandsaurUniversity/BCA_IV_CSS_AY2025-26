@@ -10,6 +10,8 @@
 
 ### 1. What is a Loop?
 
+**Iteration**: One execution/pass through a loop. If a loop runs 5 times, that's 5 iterations. The word "iterate" means "to repeat."
+
 A **loop** runs a block of code repeatedly until a condition becomes false.
 
 **Real-World Analogy:**
@@ -576,6 +578,12 @@ Find first even number sqrt(n) > 10
 
 ---
 
+## 📝 Note on Leap Year Experiments
+
+**Clarification**: Leap year checking logic (Experiment 11) is covered comprehensively in the \"**Experiment 11: Check Leap Year**\" section earlier in this file. Both simple and advanced implementations with complete test cases are provided there. Refer to that section for all leap year solutions that fully satisfy the mandatory requirement from the Unit 2 practical syllabus.
+
+---
+
 ## ✅ Checklist
 
 - [ ] Understand while loops
@@ -585,6 +593,7 @@ Find first even number sqrt(n) > 10
 - [ ] Can use break statement
 - [ ] Can use continue statement
 - [ ] Completed Experiments 11-12
+- [ ] Completed Experiment 16
 - [ ] Completed Exercises 4.3-4.5
 - [ ] Challenge questions attempted
 

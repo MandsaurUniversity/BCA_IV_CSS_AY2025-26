@@ -85,6 +85,8 @@ Think of a recipe:
 
 ### 2. Bindings (Variables) - Storing Values
 
+**Binding** (also called "variable"): A named storage location that holds a value. You declare a binding with `const` or `let`, and then you can access that value anytime by using the name. Think of it like a labeled box that keeps a value safe until you need it.
+
 Variables are like named boxes 📦 that store values. When you need that value later, you just refer to the box name.
 
 #### Three Ways to Declare Variables
@@ -152,6 +154,8 @@ let user name = "Error";          // ❌ Spaces not allowed
 let let = "Error";                // ❌ Reserved word
 let if = "Error";                 // ❌ Reserved word
 ```
+
+**Scope**: The region of your code where a variable exists and can be used. Variables declared with `const` or `let` are block-scoped, meaning they only exist inside the `{ }` braces where they're declared. A **block** is a section of code enclosed in curly braces `{ }`, like the body of an if statement or loop.
 
 #### Naming Best Practices
 ```javascript
@@ -447,6 +451,77 @@ Create a program that:
 
 ---
 
+## 📝 Experiment 8: Check if a Number is Positive, Negative, or Zero
+
+**Objective:** Apply if-else statements to classify numbers based on their sign  
+**Mandatory Practical Requirement:** Official Experiment #8 (Unit 2)  
+**Learning:** Decision making with comparison operators
+
+<details>
+  <summary><strong>Click to reveal solutions</strong></summary>
+
+### Method 1: Manual Comparison (Without Built-ins)
+
+```javascript
+// Experiment 8: Classify a number as positive, negative, or zero
+// Method 1: Direct if-else logic
+
+const number = 15;  // Change this value to test
+
+if (number > 0) {
+    console.log(number + " is a positive number");
+} else if (number < 0) {
+    console.log(number + " is a negative number");
+} else {
+    console.log(number + " is zero");
+}
+
+// Example outputs:
+// 15 is a positive number
+// 0 is zero
+// -8 is a negative number
+```
+
+### Method 2: Using Ternary Operator (Smart Way)
+
+```javascript
+// Experiment 8: Classify a number (Using ternary operator)
+// Method 2: Concise ternary notation
+
+const number = 15;
+
+const classification = (number > 0) ? "positive" 
+                     : (number < 0) ? "negative"
+                     : "zero";
+
+console.log(number + " is " + classification);
+
+// Or even more concise with arrow function:
+const classifyNumber = (num) => (num > 0) ? "positive" : (num < 0) ? "negative" : "zero";
+console.log(classifyNumber(15));  // Output: positive
+```
+
+### Test Cases
+
+```javascript
+// Test with different values
+console.log("Test 1: number = 42");
+const result1 = (42 > 0) ? "positive" : (42 < 0) ? "negative" : "zero";
+console.log("Expected: positive | Got: " + result1);
+
+console.log("\nTest 2: number = -7");
+const result2 = (-7 > 0) ? "positive" : (-7 < 0) ? "negative" : "zero";
+console.log("Expected: negative | Got: " + result2);
+
+console.log("\nTest 3: number = 0");
+const result3 = (0 > 0) ? "positive" : (0 < 0) ? "negative" : "zero";
+console.log("Expected: zero | Got: " + result3);
+```
+
+</details>
+
+---
+
 ## ✅ Checklist
 
 - [ ] Understand difference between expressions and statements
@@ -455,6 +530,7 @@ Create a program that:
 - [ ] Understand the environment concept
 - [ ] Can write programs that store and use variables
 - [ ] Completed all 5 exercises
+- [ ] Completed Experiment 8
 - [ ] Challenge questions attempted
 
 ---

@@ -10,6 +10,8 @@
 
 ### 1. What is a Function?
 
+**Integer**: A whole number (positive, negative, or zero) without a decimal point. Examples: -5, 0, 42, 1000. Different from floating-point numbers like 3.14 or 2.5, which have decimal values.
+
 A **function** is a reusable block of code that performs a specific task.
 
 **Real-World Analogy:** A function is like a kitchen appliance
@@ -163,7 +165,9 @@ console.log(`Name: ${name}, Age: ${age}`);
 
 ### 6. Arrow Functions (Modern Syntax)
 
-**Arrow functions** are a shorter way to write functions (ES6+).
+**Arrow function**: A concise, modern syntax for writing functions (introduced in ES6). Uses the `=>` (arrow) symbol instead of the `function` keyword. Arrow functions are often shorter and more readable than traditional functions, especially for simple one-line operations.
+
+Arrow functions are a shorter way to write functions (ES6+).
 
 ```javascript
 // ============================================
@@ -409,6 +413,93 @@ Create functions to:
 
 ---
 
+## 📝 Experiment 9: Check if a Number is Odd or Even
+
+**Objective:** Use modulus operator (%) to determine if a number is odd or even  
+**Mandatory Practical Requirement:** Official Experiment #9 (Unit 2)  
+**Learning:** Understanding the modulus operator and its applications
+
+<details>
+  <summary><strong>Click to reveal solutions</strong></summary>
+
+### Method 1: Using Modulus Operator Manually
+
+```javascript
+// Experiment 9: Check if a number is odd or even
+// Method 1: Manual logic with modulus
+
+const number = 17;  // Change this value to test
+
+// Explanation: number % 2 gives remainder when divided by 2
+// If remainder is 0, number is even
+// If remainder is 1, number is odd
+
+if (number % 2 === 0) {
+    console.log(number + " is an even number");
+} else {
+    console.log(number + " is an odd number");
+}
+
+// Example outputs:
+// 17 is an odd number
+// 24 is an even number
+// 0 is an even number
+```
+
+**How Modulus Works:**
+```javascript
+// Remainder when divided by 2:
+5 % 2      // = 1 (odd)
+8 % 2      // = 0 (even)
+15 % 2     // = 1 (odd)
+100 % 2    // = 0 (even)
+```
+
+### Method 2: Creating a Reusable Function (Smart Way)
+
+```javascript
+// Experiment 9: Check odd/even using a function
+// Method 2: Using function for reusability
+
+function checkOddEven(num) {
+    if (num % 2 === 0) {
+        return "even";
+    } else {
+        return "odd";
+    }
+}
+
+// Or using ternary (even more concise):
+const checkOddEven = (num) => (num % 2 === 0) ? "even" : "odd";
+
+// Usage:
+console.log(17 + " is " + checkOddEven(17));   // 17 is odd
+console.log(24 + " is " + checkOddEven(24));   // 24 is even
+console.log(0 + " is " + checkOddEven(0));     // 0 is even
+console.log(999 + " is " + checkOddEven(999)); // 999 is odd
+```
+
+### Test Cases
+
+```javascript
+// Comprehensive test suite
+const testNumbers = [1, 2, 3, 10, 15, 100, 0, -5, -8];
+
+console.log("Number | Odd/Even | Correct?");
+console.log("-------|----------|--------");
+
+testNumbers.forEach(num => {
+    const result = (num % 2 === 0) ? "even" : "odd";
+    const expected = (num % 2 === 0) ? "even" : "odd";
+    const correct = result === expected ? "✓" : "✗";
+    console.log(num + "      | " + result + "     | " + correct);
+});
+```
+
+</details>
+
+---
+
 ## ✅ Checklist
 
 - [ ] Understand what a function is
@@ -418,6 +509,7 @@ Create functions to:
 - [ ] Know console.log() well
 - [ ] Can write arrow functions
 - [ ] Completed all 5 exercises
+- [ ] Completed Experiment 9
 - [ ] Challenged questions attempted
 
 ---

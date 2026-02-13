@@ -627,9 +627,173 @@ When you're ready to move on, Week 3 covers:
 
 ---
 
+## 📚 Week 2 Terminology Reference
+
+For consistency, all key terms introduced in Week 2 are defined at first use across the five days:
+
+| Term | Day Introduced | Definition | Example |
+|------|---|---|---|
+| **Expression** | Day 1 | Code that produces a value | `10 + 20`, `age > 18` |
+| **Statement** | Day 1 | A complete instruction | `let x = 5;`, `if (x > 0) { }` |
+| **Binding** | Day 1 | Named variable storage | `const PI = 3.14;` |
+| **Block** | Day 1 | Code in curly braces { } | `if { ... }`, `while { ... }` |
+| **Scope** | Day 1 | Where variable can be used | Block-scoped with `let`/`const` |
+| **Integer** | Day 2 | Whole number (no decimal) | `-5, 0, 42, 1000` |
+| **Function** | Day 2 | Reusable code block | `function greet(name) { }` |
+| **Parameter** | Day 2 | Variable in function definition | `function add(a, b)` |
+| **Argument** | Day 2 | Value passed to function | `add(5, 3)` |
+| **Return** | Day 2 | Value sent back from function | `return result;` |
+| **Arrow Function** | Day 2 | Modern concise function | `const add = (a, b) => a + b;` |
+| **Condition** | Day 3 | Boolean expression tested | `age >= 18`, `score > 50` |
+| **Remainder** | Day 3 | Value left after division | `7 % 2 = 1` (modulus operator) |
+| **Iteration** | Day 4 | One pass through a loop | Loop runs 5 times = 5 iterations |
+
+---
+
+## 🔗 Week 2 Content Organization Map
+
+**Day 1: Foundations**
+- Understanding expressions vs statements
+- Storing values with variables (const vs let)
+- Learning the environment concept
+
+**Day 2: Functions**
+- Creating reusable code blocks with functions
+- Understanding parameters and return values
+- Learning function syntax (traditional and arrow)
+
+**Day 3: Decisions**
+- Making choices with if/else statements
+- Using comparison operators (===, !==, >, <, etc.)
+- Combining conditions with logical operators (&&, ||, !)
+
+**Day 4: Repetition (part 1)**
+- Understanding loops and iterations
+- Using while loops (condition-first)
+- Using do...while loops (body-first)
+- Loop control with break and continue
+
+**Day 5: Repetition (part 2) + Integration**
+- Using for loops (compact counting loops)
+- Nested loops for complex patterns
+- Integrating all Week 2 concepts into a full project
+
+---
+
 **File:** `Curriculum/Week-2/Day5-For-Loops-And-Integration.md`  
 **Status:** Complete ✅  
-**Last Updated:** February 2026
+**Last Updated:** February 2026  
+**Audit Status:** Consistency fixes applied, terminology consolidated ✅
+
+---
+
+## 📝 Experiment 24: Generate a Random Number Between Two Numbers
+
+**Objective:** Generate random integers within a specified range [min, max]  
+**Mandatory Practical Requirement:** Official Experiment #24 (Unit 2)  
+**Learning:** Using Math.random() with range calculations
+
+<details>
+  <summary><strong>Click to reveal solutions</strong></summary>
+
+### Method 1: Manual Calculation (Without Built-in Functions)
+
+```javascript
+// Experiment 24: Generate random number between min and max
+// Method 1: Using Math.random() with arithmetic
+
+const min = 1;
+const max = 10;
+
+// Step-by-step calculation:
+// Math.random() gives 0.0 to 0.999...
+// Multiply by (max - min + 1) to get 0 to range
+// Add min to shift to desired range
+// Use Math.floor() to get integer
+
+const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+
+console.log("Random number between " + min + " and " + max + ": " + randomNum);
+
+// Example outputs (varies each time):
+// Random number between 1 and 10: 7
+// Random number between 1 and 10: 3
+// Random number between 1 and 10: 9
+```
+
+**How It Works:**
+```javascript
+// For range 1-10:
+Math.random()                           // 0.5234... (example)
+Math.random() * (10 - 1 + 1)           // 0.5234 * 10 = 5.234
+Math.floor(5.234)                       // 5
+5 + 1                                   // 6 (final result in range 1-10)
+
+// Another example:
+Math.random() * 10 = 0.123...
+Math.floor(0.123) = 0
+0 + 1 = 1 (minimum value in range)
+```
+
+### Method 2: Using a Reusable Function (Smart Way)
+
+```javascript
+// Experiment 24: Random number generator function
+// Method 2: Encapsulated in a function for reusability
+
+function generateRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Or as arrow function:
+const randomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+// Usage:
+console.log("Random 1-10: " + generateRandomNumber(1, 10));
+console.log("Random 50-100: " + generateRandomNumber(50, 100));
+console.log("Random -10 to 10: " + generateRandomNumber(-10, 10));
+
+// Real-world example: Dice roller
+const rollDice = () => generateRandomNumber(1, 6);
+console.log("Dice roll: " + rollDice());  // 1-6
+```
+
+### Test Cases
+
+```javascript
+// Generate multiple random numbers to verify distribution
+console.log("Generating 10 random numbers between 1 and 10:");
+for (let i = 1; i <= 10; i++) {
+    const random = Math.floor(Math.random() * 10) + 1;
+    console.log("Iteration " + i + ": " + random);
+}
+
+console.log("\nGenerating random numbers in different ranges:");
+
+// Range 50-100
+console.log("\nRange 50-100:");
+for (let i = 0; i < 5; i++) {
+    const random = Math.floor(Math.random() * 51) + 50;
+    console.log("- " + random);
+}
+
+// Range 1-100 (Lottery-like)
+console.log("\nRange 1-100 (5 lottery numbers):");
+for (let i = 0; i < 5; i++) {
+    const random = Math.floor(Math.random() * 100) + 1;
+    console.log("Ticket " + (i + 1) + ": " + random);
+}
+
+// Using the reusable function
+console.log("\nUsing reusable function:");
+const getRandomInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+console.log("Random(1-10): " + getRandomInRange(1, 10));
+console.log("Random(100-200): " + getRandomInRange(100, 200));
+console.log("Random(-5 to 5): " + getRandomInRange(-5, 5));
+```
+
+</details>
 
 ---
 
