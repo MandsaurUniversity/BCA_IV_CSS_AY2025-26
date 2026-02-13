@@ -13,7 +13,13 @@
 
 ### Unary Operators
 
-Unary operators work with **one value**. We've seen some before!
+**Definition:** A **unary operator** works on only ONE operand (one value). The word "unary" literally means "one." You've actually seen some unary operators already!
+
+Compare with:
+- **Binary operator:** Works on TWO operands. Example: `5 + 3` (the `+` operator works on 5 and 3)
+- **Ternary operator:** Works on THREE parts. Examples coming next!
+
+**Common unary operators we'll study today:**
 
 #### Unary Plus & Minus
 ```javascript
@@ -95,13 +101,19 @@ function processInput(value) {
 
 ### The Ternary (Conditional) Operator
 
-The **only operator with 3 parts**: `condition ? valueIfTrue : valueIfFalse`
+**Definition:** The **ternary operator** is the only operator with THREE parts (that's why it's called "ternary" — "ternary" means "three"). It's also called the **conditional operator** because all three parts involve a condition.
 
+**Syntax:**  
 ```javascript
-// Simple example
-const age = 20;
-const status = (age >= 18) ? "Adult" : "Minor";
-console.log(status);  // "Adult"
+condition ? valueIfTrue : valueIfFalse
+```
+
+**The three parts:**
+1. **Condition** (before the `?`): A boolean expression (true or false)
+2. **Value if true** (between `?` and `:`): Returned if condition is true
+3. **Value if false** (after `:`): Returned if condition is false
+
+**Basic Examples:**
 
 // Format: condition ? trueValue : falseValue
 const score = 45;
@@ -141,6 +153,8 @@ const message = emailVerified ? "Account active" : "Verify email first";
 
 ### The typeof Operator in Detail
 
+**Definition:** The `typeof` operator returns the **type** of a value as a text string. It helps you check what kind of value (number, string, boolean, etc.) you're working with. It's a unary operator because it works on one value.
+
 ```javascript
 // Primitives
 typeof 123        // "number"
@@ -151,16 +165,19 @@ typeof Symbol()   // "symbol"
 typeof 123n       // "bigint"
 
 // Objects
-typeof null       // "object" (BUG in JavaScript!)
+typeof null       // "object" (⚠️ QUIRK/BUG in JavaScript!)
 typeof {}         // "object"
 typeof []         // "object" (arrays are objects)
 typeof function(){} // "function"
 
 // Check for null properly
 const value = null;
-console.log(value === null);        // true (correct)
-console.log(typeof value === "object");  // true (but misleading)
+console.log(value === null);        // true (correct way)
+console.log(typeof value === "object");  // true (but misleading since null is "object")
 ```
+
+**⚠️ Important Quirk:**  
+`typeof null` returns `"object"` instead of `"null"`. This is a **historical bug** in JavaScript that can't be fixed without breaking old code. Always use **strict equality** (`value === null`) to check for null, not `typeof`.
 
 ### Nullish Coalescing Operator (??)
 

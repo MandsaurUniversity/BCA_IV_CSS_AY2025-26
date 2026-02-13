@@ -117,29 +117,41 @@ By the end of Week 1, students will be able to:
 
 ### What is a Value?
 
-A **value** is any piece of data that your program works with. Think of values as the ingredients in a recipe.
+A **value** is any piece of data that your program works with. Think of values as the ingredients in a recipe. Each value has a **data type** — a category that determines what kind of information it represents and what operations you can perform on it.
+
+JavaScript has several main data types:
+- **Number** – numeric values like 42, 3.14
+- **String** – text values like "Hello"
+- **Boolean** – true or false
+- **Undefined** – absence of value (automatic)
+- **Null** – intentional absence of value
+- **Object** – complex data structures (coming later!)
+- **Symbol** – unique identifiers (advanced concept)
 
 ```javascript
 // Examples of values:
 42                      // Number value
 "Hello"                 // String value
 true                    // Boolean value
-null                    // Special value
-undefined               // Special value
+null                    // Special value (intentionally empty)
+undefined               // Special value (uninitialized)
 ```
 
 ### Number Values
 
-**JavaScript treats all numbers the same—no distinction between integers and decimals.**
+**JavaScript treats all numbers the same—no distinction between integers and decimals.** When you write a number directly in your code like `42` or `3.14`, we call it a **number literal**. The word "literal" means it's the actual value itself, not calculated or referenced—it's right there in the code.
 
 ```javascript
-// Examples
-42
-3.14159
--17
-0
-1e3              // Scientific notation: 1 × 10³ = 1000
+// Examples of number literals:
+42          // Integer literal (whole number)
+3.14159     // Floating-point literal (decimal number)
+-17         // Negative literal
+0           // Zero
+1e3         // Scientific notation: 1 × 10³ = 1000 (also a number literal)
 ```
+
+**Important Note on Floating-Point Numbers:**  
+A **floating-point number** is any number with a decimal point. Computers store floating-point numbers in **binary** (a base-2 number system using only 0s and 1s). Unfortunately, binary can't represent all decimals exactly, which causes the famous quirk below:
 
 **Operations on Numbers:**
 ```javascript
@@ -158,40 +170,48 @@ Infinity          // Division by zero
 NaN               // "Not a Number" (invalid calculation)
 ```
 
-⚠️ **Common Pitfall:**
+⚠️ **Common Pitfall (Floating-Point Precision):**
 ```javascript
-console.log(0.1 + 0.2);   // 0.30000000000000004 (floating-point quirk)
-// WHY? Computers store decimals in binary, which can't represent 0.1 exactly
+console.log(0.1 + 0.2);   // 0.30000000000000004 (NOT 0.3!)
+// WHY? Computers store decimals in binary (base-2), which can't represent 
+// all decimals exactly. 0.1 and 0.2 end up being slightly different 
+// internally, causing this "rounding error". Don't worry—it rarely matters in practice!
 ```
 
 ### String Values
 
-**Strings are sequences of characters.** Think of them as text.
+**Strings are sequences of characters.** Think of them as text. When you write text directly in your code, enclosed in quotes, we call it a **string literal**. A **literal** means it's the actual value itself, right there in the code.
 
 ```javascript
-"Hello, World!"
-'Single quotes work too'
-`Backticks allow interpolation`
-"He said, \"Hello\"" // Escaped quotes
+// Examples of string literals (all are valid):
+"Hello, World!"        // Double quotes
+'Single quotes work'    // Single quotes (same as double)
+`Backticks`            // Backticks (special features on Day 2)
+""                     // Empty string (length = 0)
 ```
 
 **String Features:**
 ```javascript
-// Length
-console.log("Hello".length);      // 5
+// Property: A named piece of information about a value
+// For strings, .length tells you how many characters
+console.log("Hello".length);      // 5 (five characters)
+console.log("".length);           // 0 (empty string)
 
-// Concatenation (combining strings)
+// Concatenation: Joining strings together using + operator
 console.log("Hello" + " " + "World");  // "Hello World"
+console.log("Say: " + "Hi!");         // "Say: Hi!"
 
-// Escape sequences
-"Line 1\nLine 2"    // \n = newline
-"Tab\tseparated"    // \t = tab
-"Quote\"inside"     // \" = literal quote
-
-// Case conversion (preview—more in Week 3)
-"HELLO".toLowerCase()   // "hello"
-"hello".toUpperCase()   // "HELLO"
+// Escape Sequences: Special character combinations using backslash
+// These represent characters that are hard to type:
+"Line 1\nLine 2"        // \n = newline (move to next line)
+"Tab\tseparated"        // \t = tab (indentation)
+"Quote\"inside"         // \" = literal quote character
+"Path: C:\\\\Users"    // \\\\ = literal backslash
+"It's"                   // No escape needed (in double quotes)
+'It\'s'                  // \' needed only if using single quotes
 ```
+
+**Note:** Additional string methods (toLowerCase, toUpperCase, substring, indexOf, etc.) are covered in detail in **Day 2 Theory** section.
 
 **Real-World Example: User Greeting**
 ```javascript
@@ -207,7 +227,12 @@ console.log(greeting);
 
 **Booleans** are simple: `true` or `false`. They answer YES/NO questions.
 
-A **boolean** (named after George Boole, a 19th-century mathematician who invented the algebra of logic) is a data type that has only two possible values: `true` and `false`. Booleans are the foundation of **conditional logic** — every decision your program makes ultimately boils down to a true/false question.
+A **boolean** (named after George Boole, a 19th-century mathematician who invented the algebra of logic) is a data type that has only two possible values: `true` or `false`. Booleans are the foundation of **conditional logic** — every decision your program makes ultimately boils down to a true/false question.
+
+**Note on Truthiness & Falsiness:**  
+JavaScript treats some values as "truthy" (basically true) and others as "falsy" (basically false) in boolean contexts. You'll see this more in later days, but here's a preview:
+- **Always falsy:** `false`, `0`, `""` (empty string), `null`, `undefined`, `NaN`
+- **Always truthy:** Everything else, including `true`, `1`, `"hello"`, even `"0"` (non-empty string)
 
 ```javascript
 true     // Yes
@@ -299,6 +324,9 @@ console.log(typeof null);         // "object" (JavaScript bug!)
 - **undefined** = An empty seat in a classroom — nobody was assigned to sit there.
 - **null** = A seat with a "Reserved" sign removed — someone explicitly said "this seat is empty now."
 
+**Why This Matters:**  
+Both `null` and `undefined` represent "no value," but for different reasons. `undefined` happens automatically (JavaScript's way of saying "nothing here"), while `null` is what you use when you intentionally want to say "empty." The difference becomes important when checking data, as we'll see in Day 3.
+
 #### When to Use Which?
 
 ```javascript
@@ -328,13 +356,15 @@ processData("Hello");    // "Processing: Hello"
 
 ## 🔄 Automatic Type Conversion (Type Coercion)
 
-**Definition:** **Type coercion** is JavaScript's automatic conversion of one data type to another when an operation involves mixed types. This happens implicitly (without you asking for it) and is one of the most common sources of bugs for beginners.
+**Definition:** **Type coercion** is JavaScript's automatic conversion of one data type to another when an operation involves mixed types. This happens implicitly (without you asking for it) and is one of the most common sources of confusion for beginners.
 
-**Why does JavaScript do this?** JavaScript is a **dynamically typed** language (also called "loosely typed"), meaning variables don't have fixed types. When you combine a number with a string, JavaScript must decide what type to use — it "coerces" one value into the other's type.
+**Why does JavaScript do this?** JavaScript is a **dynamically typed** language (also called "loosely typed"), meaning variables don't have fixed types and can change. When you combine a number with a string using an operator, JavaScript must decide what type to use. It "coerces" (forces/converts) one value into the other's type automatically.
 
-**Explicit vs Implicit Conversion:**
-- **Explicit conversion** (you do it deliberately): `Number("5")`, `String(42)`, `Boolean(0)`
-- **Implicit conversion** (JavaScript does it automatically): `"5" + 3` → `"53"`
+**Type Conversion Strategies:**
+- **Explicit conversion** (you do it deliberately): `Number("5")`, `String(42)`, `Boolean(0)` - clear intent
+- **Implicit conversion** (JavaScript does it automatically): `"5" + 3` → `"53"` - can cause surprises
+
+**Pro Tip:** We'll learn better ways to handle mixed types starting in Day 2 with the `typeof` operator and in Day 3 with strict equality (`===`). These prevent unwanted type coercion.
 
 ```javascript
 // Implicit type coercion (JavaScript does this automatically)
@@ -599,10 +629,10 @@ console.log(message.length);                 // 5
 console.log(message[0]);                     // "H" (first character)
 console.log(message[4]);                     // "o" (fifth character)
 
-// String methods
-console.log("UPPERCASE".toLowerCase());      // "uppercase"
-console.log("lowercase".toUpperCase());      // "LOWERCASE"
-console.log("hello world".length);           // 11
+// Using string index
+const word = "JavaScript";
+console.log(word[0]);                        // "J" (first character)
+console.log(word[word.length - 1]);          // "t" (last character)
 ```
 
 ### Exercise 1.4: Type Conversion in Action

@@ -40,19 +40,31 @@ const scientific = 1e3;   // Scientific: 1000
 const negative = -42;
 ```
 
-#### Number Methods (Preview)
+#### Number Methods
+
+**Definition:** A **method** is a function (an action/task) that belongs to a value. Methods are called by writing: `value.methodName()`. Think of methods as abilities or actions that values can perform.
+
+Numbers have several useful methods:
+
 ```javascript
 const num = 3.14159;
 
-// Converting to string
+// Convert to string (useful for display/formatting)
 num.toString();           // "3.14159"
-num.toFixed(2);           // "3.14" (round to 2 decimals)
 
-// Checking special values
-isNaN(NaN);               // true
-isFinite(100);            // true
+// Round to decimal places
+num.toFixed(2);           // "3.14" (returns a STRING, rounded to 2 decimals)
+num.toFixed(0);           // "3" (no decimal places)
+(3.6).toFixed(0);         // "4" (rounds up)
+
+// Check special values
+isNaN(NaN);               // true (is NaN?)
+isNaN(100);               // false (is 100 "not a number"? No, it is a number)
+isFinite(100);            // true (is it finite/normal?)
 isFinite(Infinity);       // false
 ```
+
+**Why methods return strings:** When you use `.toFixed()`, JavaScript returns a STRING like `"3.14"` (not the number 3.14). This is for display purposes, where you want exact formatting. If you need to do math with the result, convert it back to a number: `Number((3.14159).toFixed(2))`.
 
 **Real-World: Product Pricing**
 ```javascript
@@ -64,48 +76,176 @@ console.log(price * 1.18);      // With 18% tax
 ### Strings in Detail
 
 #### Creating Strings
-```javascript
-const single = 'Hello';
-const double = "World";
-const backtick = `JavaScript`;     // Template literals (more on Day 3)
-const empty = "";                  // Empty string (length = 0)
 
-// Escape sequences
-"Line 1\nLine 2"                   // Newline
-"Path: C:\\Users\\Name"            // Backslash
-"He said \"Hi\""                   // Double quote
-'It\'s working'                    // Single quote (escape not needed in double quotes)
+There are THREE ways to create strings in JavaScript:
+
+```javascript
+// Method 1: Single quotes
+const single = 'Hello';
+
+// Method 2: Double quotes
+const double = "World";
+
+// Method 3: Backticks (creates template literals)
+const backtick = `JavaScript`;
+
+// Empty string (length = 0)
+const empty = "";
 ```
 
-#### String Methods
+All three produce strings. The difference is what special features they support.
+
+#### Template Literals (Backticks) - IMPORTANT FEATURE ⭐
+
+**Definition:** A **template literal** is a string created using backticks (`` ` ``) instead of quotes. Template literals allow you to:
+1. **Embed expressions** inside strings using `${}` syntax (string interpolation)
+2. **Write multi-line strings** without special escape characters
+3. **Make code more readable** when combining values and text
+
+**Basic Template Literal (no interpolation):**
+```javascript
+const greeting = `Hello, World!`;  // Just a regular string, but with backticks
+console.log(greeting);             // "Hello, World!"
+```
+
+**String Interpolation with `${}`:**
+When you use `${}` inside a template literal, JavaScript evaluates the expression inside the braces and inserts the result into the string:
+
+```javascript
+const name = "Alice";
+const age = 25;
+
+// WITHOUT template literals (concatenation - messy)
+const message1 = "My name is " + name + " and I am " + age + " years old";
+
+// WITH template literals (interpolation - clean!)
+const message2 = `My name is ${name} and I am ${age} years old`;
+
+console.log(message1);  // "My name is Alice and I am 25 years old"
+console.log(message2);  // "My name is Alice and I am 25 years old" (same result, cleaner code!)
+```
+
+**The `${}` syntax is an EXPRESSION:**
+Anything inside `${}` is evaluated as a JavaScript expression:
+
+```javascript
+const x = 10;
+const y = 20;
+
+console.log(`${x} + ${y} = ${x + y}`);     // "10 + 20 = 30"
+console.log(`Double of ${x} is ${x * 2}`); // "Double of 10 is 20"
+console.log(`Name is ${name.toUpperCase()}`); // "Name is ALICE"
+```
+
+**Multi-line Strings:**
+Template literals preserve newlines, making multi-line text much easier:
+
+```javascript
+// WITHOUT template literals - need escape characters
+const poem1 = "Line 1\nLine 2\nLine 3";
+
+// WITH template literals - just press Enter
+const poem2 = `Line 1
+Line 2
+Line 3`;
+
+console.log(poem1);
+// Line 1
+// Line 2
+// Line 3
+
+console.log(poem2);
+// Line 1
+// Line 2
+// Line 3
+```
+
+**Real-World Example - User Profile Display:**
+```javascript
+const firstName = "Priya";
+const lastName = "Patel";
+const email = "priya@university.edu";
+const joinDate = "2024-01-15";
+
+// Template literal makes this MUCH clearer
+const profile = `
+========== PROFILE ==========
+Name: ${firstName} ${lastName}
+Email: ${email}
+Joined: ${joinDate}
+=============================
+`;
+
+console.log(profile);
+// Output:
+// ========== PROFILE ==========
+// Name: Priya Patel
+// Email: priya@university.edu
+// Joined: 2024-01-15
+// =============================
+```
+
+**When to Use Each Type:**
+
+| Type | Use When | Example |
+|------|----------|---------|
+| Single quotes `'...'` | Simple text, no special features | `'Hello'` |
+| Double quotes `"..."` | Simple text, no special features | `"World"` |
+| Backticks `` `...` `` | Need to embed variables/expressions | `` `Hello ${name}` `` |
+| Backticks `` `...` `` | Need multi-line text | `` `Line 1\nLine 2` `` |
+
+**Pro Tip:** Modern JavaScript developers prefer template literals because they're more readable and flexible. Use them by default unless you have a specific reason not to.
+
+#### Escape Sequences (for single/double quotes)
+
+When using single or double quotes, you can't just press Enter to go to a new line. Instead, use **escape sequences** — special character combinations that represent characters:
+
+```javascript
+// Escape sequences start with backslash \
+"Line 1\nLine 2"                   // \n = newline (move to next line)
+"Tab\tseparated"                   // \t = tab (indentation)
+"Quote\"inside"                    // \" = literal double quote character
+"Path: C:\\\\Users"                // \\\\ = literal backslash
+"It's"                             // No escape needed (in double quotes)
+'It\'s'                            // \' needed only with single quotes
+```
+
+**Note:** With template literals, you DON'T need escape sequences for newlines—just press Enter!
+
+---
+
+#### String Methods & Properties
+
+**Definition (Review):** A **property** is a named piece of information about a value (like `.length`). A **method** is a function that belongs to a value (like `.toUpperCase()`). You call methods with parentheses: `value.method()`. You access properties without parentheses: `value.property`.
+
 ```javascript
 const text = "JavaScript";
 
-// Case
+// PROPERTIES (no parentheses)
+text.length;               // 10 ("JavaScript" has 10 characters)
+
+// METHODS (with parentheses)
+// Case conversion (methods)
 text.toUpperCase();        // "JAVASCRIPT"
 text.toLowerCase();        // "javascript"
 
-// Length
-text.length;               // 10
+// Accessing characters (property-like access)
+text[0];                   // "J" (first character, index 0)
+text[4];                   // "S" (fifth character, index 4)
 
-// Accessing characters (index starts at 0)
-text[0];                   // "J"
-text[4];                   // "S"
-text[text.length - 1];     // "t" (last character)
+// Finding substrings (methods)
+text.indexOf("Script");    // 4 ("Script" starts at index 4)
+text.includes("Java");     // true (contains "Java"?)
+text.startsWith("Java");   // true (starts with "Java"?)
 
-// Finding substrings
-text.indexOf("Script");    // 4 (position where "Script" starts)
-text.includes("Java");     // true
-text.startsWith("Java");   // true
-
-// Extracting parts
+// Extracting parts (methods)
 text.substring(0, 4);      // "Java" (from index 0 to 3)
 text.slice(4);             // "Script" (from index 4 to end)
 
-// Trimming whitespace
-"  hello  ".trim();        // "hello"
+// Whitespace handling (methods)
+"  hello  ".trim();        // "hello" (removes spaces from start/end)
 
-// Replacing
+// Replacement (methods)
 text.replace("Java", "Type"); // "TypeScript"
 ```
 
@@ -119,30 +259,47 @@ console.log(email.indexOf("@") > 0);     // true (@ not at start)
 
 ### Arithmetic Operators
 
+**Definition:** An **operator** is a symbol that tells JavaScript to perform an operation on one or more values. **Operands** are the values that an operator works on. For example, in `5 + 3`, the `+` is the operator, and `5` and `3` are operands.
+
+**The + operator with two operands (addition):**  
+When both operands are numbers, `+` adds them together.
+
+When at least one operand is a string, `+` performs **concatenation** (joining/combining strings together) instead:
+```javascript
+"Hello" + " World"   // "Hello World" (string concatenation)
+5 + 3                 // 8 (numeric addition)
+"5" + 3              // "53" (concatenation: 3 becomes "3", then joins)
+```
+
 | Operator | Name | Example | Result |
 |----------|------|---------|--------|
-| `+` | Addition | 5 + 3 | 8 |
-| `-` | Subtraction | 5 - 3 | 2 |
-| `*` | Multiplication | 5 * 3 | 15 |
-| `/` | Division | 15 / 3 | 5 |
-| `%` | Modulo (Remainder) | 17 % 5 | 2 |
-| `**` | Exponentiation | 2 ** 3 | 8 |
+| `+` | Addition (or concatenation) | `5 + 3` | `8` |
+| `-` | Subtraction | `5 - 3` | `2` |
+| `*` | Multiplication | `5 * 3` | `15` |
+| `/` | Division | `15 / 3` | `5` |
+| `%` | Modulo (Remainder) | `17 % 5` | `2` |
+| `**` | Exponentiation (to the power of) | `2 ** 3` | `8` (2 cubed = 2 × 2 × 2) |
 
 #### Modulo Operator (%)
 The modulo operator returns the **remainder** after division.
 
 ```javascript
 // Finding remainder
-console.log(17 % 5);       // 2 (17 = 5*3 + 2)
-console.log(10 % 3);       // 1
-console.log(20 % 2);       // 0 (20 is divisible by 2)
+console.log(17 % 5);       // 2 (17 = 5*3 + 2, remainder is 2)
+console.log(10 % 3);       // 1 (10 = 3*3 + 1, remainder is 1)
+console.log(20 % 2);       // 0 (20 is divisible by 2, no remainder)
 
-// Check if number is even or odd
-10 % 2 === 0;             // true (even—next week we use this!)
-11 % 2 === 1;             // true (odd)
+// Practical: Check if number is even or odd
+10 % 2 === 0;             // true (ten is even—divisible by 2)
+11 % 2 === 1;             // true (eleven is odd—remainder 1)
 
-// Cycling through values (next week: arrays!)
-index % arrayLength;      // Always gives 0 to arrayLength-1
+// Practical: Cycling through values
+// If you have 3 options (indices 0, 1, 2):
+// and you cycle through values 0-8:
+for (let i = 0; i < 9; i++) {
+    console.log(i % 3);   // Outputs: 0,1,2,0,1,2,0,1,2
+    // Always stays in range 0-2!
+}
 ```
 
 **Real-World Example: Shift Scheduling**
@@ -158,22 +315,31 @@ console.log(shift);  // 2 (employee 5 gets Night shift)
 // Pattern repeats!
 ```
 
-#### Order of Operations (PEMDAS)
+#### Order of Operations (Operator Precedence)
+
+**Definition:** **Operator precedence** is the order in which JavaScript evaluates multiple operators in an expression. Some operators are computed before others, just like in math class (you learned PEMDAS: Parentheses, Exponents, Multiply/Divide, Add/Subtract).
 
 ```javascript
-// Parentheses
-2 + 3 * 4           // 14 (multiply first)
-(2 + 3) * 4         // 20 (parentheses first)
+// Parentheses have HIGHEST precedence
+2 + 3 * 4           // 14 (multiply first: 3*4=12, then 12+2)
+(2 + 3) * 4         // 20 (parentheses first: 2+3=5, then 5*4)
 
-// Exponents
+// Exponents (**) are next
 2 ** 3 * 2          // 16 (2^3 = 8, then 8*2)
 
-// Multiplication/Division (left to right)
+// Multiplication & Division LEFT to RIGHT (same precedence)
 100 / 10 * 2        // 20 (100/10 = 10, then 10*2)
+100 * 2 / 10        // 20 (same result, different order)
 
-// Addition/Subtraction (left to right)
+// Addition & Subtraction LEFT to RIGHT (lowest precedence)
 10 - 5 + 3          // 8 (10-5 = 5, then 5+3)
 ```
+
+**Precedence Order (from highest to lowest):**
+1. Parentheses `( )`
+2. Exponentiation `**`
+3. Multiplication `*`, Division `/`, Modulo `%` (left to right)
+4. Addition `+`, Subtraction `-` (left to right)
 
 ### Type Coercion with Operators
 

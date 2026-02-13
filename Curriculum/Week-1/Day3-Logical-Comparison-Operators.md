@@ -7,13 +7,35 @@
 - **1:30-2:45:** Practical: Boolean Logic Puzzles
 - **2:45-3:00:** Q&A & Assignment
 
+**Note:** String template literals with backticks are covered in **Day 2** (see "Creating Strings" section). Today we focus on comparison operators (===, <, >, etc.) and logical operators (&&, ||, !).
+
 ---
 
 ## 📖 Theory Content
 
+### Understanding Expressions and Statements
+
+**Definition:** An **expression** is a piece of code that produces a value. Examples:
+- `2 + 3` (produces 5)
+- `"Hello" + " World"` (produces "Hello World")
+- `age > 18` (produces true or false)
+
+**Definition:** A **statement** is a complete instruction for JavaScript to execute. Statements often contain expressions and end with a semicolon (`;`). Examples:
+- `console.log(2 + 3);` (executes the statement; the 2 + 3 expression is evaluated first)
+- `let name = "Alice";` (declares and assigns; "Alice" is an expression)
+
+**Key Difference:**
+- Expression: Produces a VALUE
+- Statement: Executes an INSTRUCTION (may use expressions)
+
+**In This Day's Context:**  
+Comparison operators create boolean **expressions** that produce true/false values. You'll use these expressions in **statements** starting in Week 2 (with if/else statements).
+
+---
+
 ### Comparison Operators
 
-Comparison operators return **true** or **false**. They answer "yes/no" questions.
+Comparison operators return **true** or **false**. They answer "yes/no" questions (they are expressions that produce boolean values).
 
 | Operator | Name | Example | Result |
 |----------|------|---------|--------|
@@ -127,7 +149,7 @@ false || false  = false
 
 #### NOT Operator (!)
 
-Reverses the boolean value.
+Reverses the boolean value (inverts true to false, false to true).
 
 ```javascript
 const isRaining = true;
@@ -139,6 +161,36 @@ console.log(isSunny);  // false
 !(5 > 10)       // true (5 is not > 10)
 !(10 > 5)       // false
 ```
+
+**Advanced Concept: Short-Circuit Evaluation**
+
+**Definition:** **Short-circuit evaluation** means that logical operators (`&&` and `||`) stop evaluating as soon as they determine the result. The second operand might not even be checked!
+
+**How it works:**
+
+- **AND (`&&`):** If the FIRST part is false, the result is automatically false. JavaScript never evaluates the second part:
+  ```javascript
+  false && console.log("This code NEVER runs");  // console.log is NOT called
+  true && console.log("This code RUNS");        // console.log IS called
+  
+  // Practical example:
+  const user = null;
+  const isAdmin = user && user.role === "admin";  // Returns user (falsy), doesn't check user.role
+  ```
+
+- **OR (`||`):** If the FIRST part is true, the result is automatically true. JavaScript never evaluates the second part:
+  ```javascript
+  true || console.log("This code NEVER runs");   // console.log is NOT called
+  false || console.log("This code RUNS");       // console.log IS called
+  
+  // Practical example (setting defaults):
+  const username = userInput || "Guest";  // If userInput is falsy, use "Guest"
+  ```
+
+**Why this matters:**
+- **Performance:** Avoids unnecessary calculations
+- **Safety:** Can prevent errors (check if something exists BEFORE using it)
+- **Programming patterns:** Often used for default values or guards
 
 ### Combining Operators
 

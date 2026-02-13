@@ -9,6 +9,8 @@
 
 # Copilot Instructions (Author-only, not for student access)
 .github/copilot-instructions.md
+.github/
+.github/**/*
 
 # VS Code Editor Settings (Local to developer)
 .vscode/
