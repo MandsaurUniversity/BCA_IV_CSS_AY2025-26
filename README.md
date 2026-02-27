@@ -155,6 +155,23 @@ BCA IV sem/
 
 ---
 
+## 🛠️ Student Push Utility
+
+To help beginners submit work safely to the correct GitHub repository, a guided script is available:
+
+- **Script:** [Utility/git-assistant.bat](./Utility/git-assistant.bat)
+- **Detailed Guide:** [Utility/README.md](./Utility/README.md)
+
+### Quick Use
+1. Open terminal in repository root folder.
+2. Run:
+   ```bat
+   Utility\git-assistant.bat
+   ```
+3. Follow prompts to verify identity, remote, GitHub user, stage files, commit, and push.
+
+---
+
 ## 📋 Assessment Strategy
 
 ### Continuous Evaluation (40%)
