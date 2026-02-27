@@ -86,4 +86,4 @@ arr.sort((a,b)=>(a-b));
 console.log(arr);
 // descending
 arr.sort((a,b)=>(b-a));
-console.log(arr);
+console.log(arr); 
