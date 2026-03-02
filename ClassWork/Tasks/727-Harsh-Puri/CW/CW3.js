@@ -41,7 +41,7 @@ console.log("Array Before Sort: "+arr);
 
 // Can try wi t turnery tooo
 let Assce= arr.sort( (a,b)=>(a-b));
-console.log("Array After Assc Sort: "+Assce);
-let desc= arr.sort( (a,b)=>(b-a));
 
+let desc= arr.sort( (a,b)=>(b-a));
+console.log("Array After Assc Sort: "+Assce);
 console.log("Array After Desc Sort: "+desc);
