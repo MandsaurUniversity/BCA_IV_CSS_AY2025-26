@@ -1,22 +1,33 @@
-console.log("\n=== Calculations ===");
+const str = 'RaceCar';
 
-// Calculate sum of 1 to 10 using for loop
-let sum = 0;
-for (let i = 1; i <= 10; i++) {
-    sum = sum + i;
-}
-console.log("\nSum of 1-10: " + sum);  // 55
+const cleaned = str.toLowerCase();
+let start = 0;
+let end = cleaned.length - 1;
 
-// Calculate factorial of 5 (5! = 5×4×3×2×1)
-let factorial = 1;
-for (let i = 5; i > 0; i--) {
-    factorial = factorial * i;
-}
-console.log("5 factorial: " + factorial);  // 120
+while (start < end) {
+        if (cleaned[start] !== cleaned[end]) {
+            return false;
+        }
+        start++;
+        end--;
+    }
 
-// Find sum of squares 1² + 2² + 3² + ... + 10²
-let sumOfSquares = 0;
-for (let i = 1; i <= 10; i++) {
-    sumOfSquares = sumOfSquares + (i * i);
+if (start >= end){
+    console.log("It is Palindrome.");
 }
-console.log("\n.Sum of squares (1-10): " + sumOfSquares + "\n");  // 385
+
+
+//Method 2:  Using built in methods
+
+function isPalindrome (str){
+
+    let cleaned = str.toLowerCase().replace(/[ ]/g,"");
+
+    let reversed = cleaned.split("").reverse().join("");
+
+    return (reversed == cleaned);
+
+}
+
+console.log("Race Car: ", isPalindrome("Race Car"));
+console.log("Race: ", isPalindrome("Race"));
