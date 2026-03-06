@@ -619,8 +619,15 @@ A **palindrome** is a word, number, or phrase that reads the same forwards and b
 // Method 1: Manual loop comparing characters from start and end
 
 function isPalindrome(str) {
-    // Convert to lowercase and remove spaces
-    const cleaned = str.toLowerCase();
+    // Convert to lowercase and remove spaces manually (no built‑ins/array methods)
+    const lowered = str.toLowerCase();
+    let cleaned = "";
+    for (let i = 0; i < lowered.length; i++) {
+        if (lowered[i] !== " ") {
+            cleaned += lowered[i];
+        }
+    }
+
     let start = 0;
     let end = cleaned.length - 1;
     
