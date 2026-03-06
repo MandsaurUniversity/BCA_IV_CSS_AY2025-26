@@ -7,6 +7,10 @@ setlocal EnableExtensions EnableDelayedExpansion
 :: stage, commit, and push with minimal command-line knowledge.
 :: ============================================================
 
+:: Git executable location variable. Default to just "git"; if it's
+:: not on the PATH we will try common install locations later.
+set "GIT_CMD=git"
+
 set "SCRIPT_DIR=%~dp0"
 set "REPO_DIR=%SCRIPT_DIR%.."
 
@@ -50,15 +54,26 @@ echo.
 goto :finish
 
 :check_git_ready
-where git >nul 2>nul
+:: Attempt to run git; if it fails then search common install folders
+%GIT_CMD% --version >nul 2>nul
 if errorlevel 1 (
-    echo [ERROR] Git is not installed or not available in PATH.
-    echo Install Git from: https://git-scm.com/downloads
-    pause
-    exit /b 1
+    rem try pointing to typical Git for Windows locations
+    set "GIT_CMD="
+    for %%F in (
+        "%ProgramFiles%\Git\cmd\git.exe"
+        "%ProgramFiles(x86)%\Git\cmd\git.exe"
+        "%USERPROFILE%\AppData\Local\Programs\Git\cmd\git.exe"
+    ) do if exist %%~F set "GIT_CMD=%%~F"
+
+    if not defined GIT_CMD (
+        echo [ERROR] Git is not installed or could not be found.
+        echo Install Git from: https://git-scm.com/downloads
+        pause
+        exit /b 1
+    )
 )
 
-git rev-parse --is-inside-work-tree >nul 2>nul
+"%GIT_CMD%" rev-parse --is-inside-work-tree >nul 2>nul
 if errorlevel 1 (
     echo [ERROR] This folder is not a git repository.
     echo Please run this script from a project that has .git initialized.
@@ -74,8 +89,8 @@ echo ------------------------------------------------------------
 set "GIT_NAME="
 set "GIT_EMAIL="
 
-for /f "delims=" %%A in ('git config user.name 2^>nul') do set "GIT_NAME=%%A"
-for /f "delims=" %%A in ('git config user.email 2^>nul') do set "GIT_EMAIL=%%A"
+for /f "delims=" %%A in ('"%GIT_CMD%" config user.name 2^>nul') do set "GIT_NAME=%%A"
+for /f "delims=" %%A in ('"%GIT_CMD%" config user.email 2^>nul') do set "GIT_EMAIL=%%A"
 
 if defined GIT_NAME if defined GIT_EMAIL (
     echo Saved Git name : !GIT_NAME!
@@ -98,13 +113,13 @@ if "!NEW_EMAIL!"=="" (
     exit /b 1
 )
 
-git config user.name "!NEW_NAME!"
+"%GIT_CMD%" config user.name "!NEW_NAME!"
 if errorlevel 1 (
     echo [ERROR] Failed to save git user.name
     exit /b 1
 )
 
-git config user.email "!NEW_EMAIL!"
+"%GIT_CMD%" config user.email "!NEW_EMAIL!"
 if errorlevel 1 (
     echo [ERROR] Failed to save git user.email
     exit /b 1
@@ -118,7 +133,7 @@ echo.
 echo ------------------------------------------------------------
 echo Step 2/5: Verifying the repository remote (origin)...
 echo ------------------------------------------------------------
-git remote -v
+"%GIT_CMD%" remote -v
 if errorlevel 1 (
     echo [ERROR] Could not read remotes for this repository.
     exit /b 1
@@ -189,31 +204,83 @@ echo ------------------------------------------------------------
 
 echo.
 echo Currently staged files:
-git diff --cached --name-only
+"%GIT_CMD%" diff --cached --name-only
 
 echo.
 echo Unstaged tracked files:
-git diff --name-only
+"%GIT_CMD%" diff --name-only
 
 echo.
 echo New untracked files:
-git ls-files --others --exclude-standard
+"%GIT_CMD%" ls-files --others --exclude-standard
 
 echo.
 set /p "STAGE_ALL=Stage all changes (tracked + untracked) for commit? [Y/n]: "
 if /I "%STAGE_ALL%"=="" set "STAGE_ALL=Y"
+
 if /I "%STAGE_ALL%"=="Y" (
-    git add -A
+    "%GIT_CMD%" add -A
     if errorlevel 1 (
         echo [ERROR] Failed to stage files.
         exit /b 1
     )
 ) else (
     echo [INFO] Files were not auto-staged.
+
+    rem --- new interactive staging sequence ---
+    set "USE_STAGED=N"
+    set "ADD_TRACKED=N"
+    set "ADD_UNTRACKED=N"
+
+    rem check if any files already staged
+    set "HAS_STAGED="
+    for /f "delims=" %%A in ('"%GIT_CMD%" diff --cached --name-only') do set "HAS_STAGED=1"
+
+    if defined HAS_STAGED (
+        set /p "USE_STAGED=Do you want only the staged files to commit? [Y/n]: "
+        if /I "%USE_STAGED%"=="" set "USE_STAGED=Y"
+    )
+
+    if /I "%USE_STAGED%"=="Y" (
+        goto AFTER_STAGE_CHOICE
+    )
+
+    rem not using only staged – consider unstaged / untracked
+    set "HAS_TRACKED="
+    for /f "delims=" %%A in ('"%GIT_CMD%" diff --name-only') do set "HAS_TRACKED=1"
+    if defined HAS_TRACKED (
+        set /p "ADD_TRACKED=Add all changed tracked files? [Y/n]: "
+        if /I "%ADD_TRACKED%"=="" set "ADD_TRACKED=Y"
+        if /I "%ADD_TRACKED%"=="Y" (
+            "%GIT_CMD%" add -u
+            if errorlevel 1 (
+                echo [ERROR] Failed to stage tracked changes.
+                exit /b 1
+            )
+        )
+    )
+
+    set "HAS_UNTRACKED="
+    for /f "delims=" %%A in ('"%GIT_CMD%" ls-files --others --exclude-standard') do set "HAS_UNTRACKED=1"
+    if defined HAS_UNTRACKED (
+        set /p "ADD_UNTRACKED=Add untracked files? [Y/n]: "
+        if /I "%ADD_UNTRACKED%"=="" set "ADD_UNTRACKED=Y"
+        if /I "%ADD_UNTRACKED%"=="Y" (
+            for /f "delims=" %%F in ('"%GIT_CMD%" ls-files --others --exclude-standard') do (
+                "%GIT_CMD%" add "%%F"
+                if errorlevel 1 (
+                    echo [ERROR] Failed to stage file %%F.
+                    exit /b 1
+                )
+            )
+        )
+    )
 )
 
+:AFTER_STAGE_CHOICE
+
 set "HAS_STAGED="
-for /f "delims=" %%A in ('git diff --cached --name-only') do set "HAS_STAGED=1"
+for /f "delims=" %%A in ('"%GIT_CMD%" diff --cached --name-only') do set "HAS_STAGED=1"
 
 if not defined HAS_STAGED (
     echo [STOPPED] No staged files found. Nothing to commit.
@@ -223,7 +290,7 @@ if not defined HAS_STAGED (
 
 echo.
 echo Final staged files for commit:
-git diff --cached --name-only
+"%GIT_CMD%" diff --cached --name-only
 exit /b 0
 
 :commit_and_push
@@ -238,23 +305,23 @@ if "%COMMIT_MSG%"=="" (
     exit /b 1
 )
 
-git commit -m "%COMMIT_MSG%"
+"%GIT_CMD%" commit -m "%COMMIT_MSG%"
 if errorlevel 1 (
     echo [ERROR] Commit failed. Please check git status and try again.
     exit /b 1
 )
 
 set "CURRENT_BRANCH="
-for /f "delims=" %%A in ('git rev-parse --abbrev-ref HEAD') do set "CURRENT_BRANCH=%%A"
+for /f "delims=" %%A in ('"%GIT_CMD%" rev-parse --abbrev-ref HEAD') do set "CURRENT_BRANCH=%%A"
 if not defined CURRENT_BRANCH set "CURRENT_BRANCH=main"
 
 echo.
 echo Pushing to remote...
-git push
+"%GIT_CMD%" push
 if errorlevel 1 (
     echo.
     echo [INFO] Regular push failed. Trying first-time upstream push...
-    git push -u origin "%CURRENT_BRANCH%"
+    "%GIT_CMD%" push -u origin "%CURRENT_BRANCH%"
     if errorlevel 1 (
         echo [ERROR] Push failed. Please check remote permissions/branch and retry.
         exit /b 1
