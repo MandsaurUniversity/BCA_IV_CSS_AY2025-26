@@ -142,33 +142,19 @@ if (!isUnlocked) {
 }
 
 
-// 1. null vs undefined Comparison
-// Loose equality (==) returns true because both represent "emptiness"
+
 console.log("null == undefined:", null == undefined); 
-
-// Strict equality (===) returns false because their types are different
-// null is an object (legacy JS quirk), undefined is undefined
 console.log("null === undefined:", null === undefined); 
-
-
-// 2. Forced Type Conversions
 let isTrue = true;
 let myNumber = 100;
-
-let boolToNum = Number(isTrue); // Converts true to 1
-let numToString = String(myNumber); // Converts 100 to "100"
-
+let boolToNum = Number(isTrue); 
+let numToString = String(myNumber); 
 console.log("\n--- Forced Conversions ---");
 console.log("Boolean to Number:", boolToNum, "| Type:", typeof boolToNum);
 console.log("Number to String:", numToString, "| Type:", typeof numToString);
-
-
-// 3. Truthy vs Falsy Check
 const valuesToCheck = [0, "", NaN, 1, "Hello"];
-
 console.log("\n--- Truthy or Falsy? ---");
 valuesToCheck.forEach(val => {
-    // Using Boolean() to check if the value is truthy or falsy
     console.log(`Value: [${val}] is ${Boolean(val) ? "Truthy ✅" : "Falsy ❌"}`);
 });
 
