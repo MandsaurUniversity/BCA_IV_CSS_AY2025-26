@@ -68,5 +68,20 @@ console.log(" Is 'RaceCar' a palindrome?: " , isPalindromeWithSpaces("RaceCar"))
 console.log(" Is 'Hello' a palindrome?: " , isPalindromeWithSpaces("Hello")); // should return true or false...
 console.log(" A man a plan a canal Panama is a palindrome?: " , isPalindromeWithSpaces("A man a plan a canal Panama")); // should return true or false...   
 
+// Method 4: using built in array methods...
+function isPalindrome(str){
+    // converting the string to lowercase and removing the spaces...
+    let cleaned = str.toLowerCase().replace(/[ ]/g,"");
+
+    // reverse the string and then check it with the cleaned string...
+    // how? split "cleaned" it into an array, reverse and then join back
+    let reversed = cleaned.split('').reverse().join('');
 
 
+    // compare the cleaned string with the reverse string
+    return (reversed === cleaned);
+
+}
+console.log("Method 4: Palindrome Checker...")
+console.log("Race Car: ",isPalindrome("Race Car"));
+console.log("Race: ",isPalindrome("Race"));
