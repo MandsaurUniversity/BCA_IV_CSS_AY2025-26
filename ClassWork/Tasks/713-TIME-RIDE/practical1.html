@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Calculator v1 - Alert Based</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; }
+        .info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover { background: #0b7dda; }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Expense Calculator v1</h1>
+        
+        <div class="info">
+            <strong>Instructions:</strong><br>
+            1. Click the button below<br>
+            2. Enter your expenses when prompted<br>
+            3. Check the browser console (F12) for the detailed receipt
+        </div>
+        
+        <button onclick="calculateExpenses()">Start Expense Calculator</button>
+        
+        <div class="footer">
+            <p>Open Developer Tools (F12) → Console tab to see detailed output</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateExpenses() {
+            // Get expenses from user via prompt
+            const groceries = parseFloat(prompt("Enter grocery expenses (₹):") || 0);
+            const transportation = parseFloat(prompt("Enter transportation expenses (₹):") || 0);
+            const entertainment = parseFloat(prompt("Enter entertainment expenses (₹):") || 0);
+            const utilities = parseFloat(prompt("Enter utilities expenses (₹):") || 0);
+
+            // Validate input
+            if (isNaN(groceries) || isNaN(transportation) || isNaN(entertainment) || isNaN(utilities)) {
+                alert("Invalid input! Please enter valid numbers.");
+                return;
+            }
+
+            // Calculate totals
+            const subtotal = groceries + transportation + entertainment + utilities;
+            const taxRate = 0.05;  // 5% tax
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+
+            // Generate receipt (using all Week 1 concepts)
+            console.clear();
+            console.log("════════════════════════════════════════");
+            console.log("         💳 EXPENSE RECEIPT              ");
+            console.log("════════════════════════════════════════");
+            console.log("");
+            console.log("ITEMIZED EXPENSES:");
+            console.log("-".repeat(40));
+            console.log(`Groceries           : ₹${groceries.toFixed(2)}`);
+            console.log(`Transportation      : ₹${transportation.toFixed(2)}`);
+            console.log(`Entertainment       : ₹${entertainment.toFixed(2)}`);
+            console.log(`Utilities           : ₹${utilities.toFixed(2)}`);
+            console.log("-".repeat(40));
+            console.log(`Subtotal            : ₹${subtotal.toFixed(2)}`);
+            console.log(`Tax (5%)            : ₹${tax.toFixed(2)}`);
+            console.log("=".repeat(40));
+            console.log(`TOTAL               : ₹${total.toFixed(2)}`);
+            console.log("=".repeat(40));
+            
+            // Additional analysis
+            const highestCategory = Math.max(groceries, transportation, entertainment, utilities);
+            let categoryName = "";
+            if (highestCategory === groceries) categoryName = "Groceries";
+            else if (highestCategory === transportation) categoryName = "Transportation";
+            else if (highestCategory === entertainment) categoryName = "Entertainment";
+            else categoryName = "Utilities";
+            
+            console.log("");
+            console.log("📊 ANALYSIS:");
+            console.log(`Highest expense: ${categoryName} (₹${highestCategory.toFixed(2)})`);
+            console.log(`Average per category: ₹${(subtotal / 4).toFixed(2)}`);
+            const savingsTip = total * 0.1;
+            console.log(`💡 Tip: Save 10% next month (₹${savingsTip.toFixed(2)})`);
+            console.log("");
+            
+            // Alert user
+            alert(`✅ Receipt generated!\n\nTotal Expenses: ₹${total.toFixed(2)}\n\nCheck console (F12) for detailed receipt`);
+        }
+    </script>
+</body>
+</html>
