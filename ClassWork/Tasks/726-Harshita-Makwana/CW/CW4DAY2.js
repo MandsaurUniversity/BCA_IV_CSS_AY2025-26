@@ -1,0 +1,12 @@
+const number = [1,2,3,4,5,6,7,8,9,10];
+console.log("even number:"+ number);
+const even =number.filter(num => num % 2==0);
+console.log("even number:" + even);
+const odds = number.filter(num => num % 2 !==0);
+console.log("odd number: + odd");
+const greaterThan5 = number.filter(num => 3 && num <= 7);
+console.log("Number grater thaazn 5:" + graterThan5);
+const numberbetween3and7 = number.filter(num => num>= 3 && num <= 7);
+console.log("Number between 3 and 7 are:" + numberbetween3and7);
+const divisible = number.filter(num => num% 3 == 0);
+console.log("Number divisible by 3 are:" + divisible);

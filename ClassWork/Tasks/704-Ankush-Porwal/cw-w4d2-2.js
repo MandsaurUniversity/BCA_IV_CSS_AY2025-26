@@ -1,0 +1,19 @@
+// Using filter() on Array of Strings...
+
+const words = ["banana", "apple", "Strawberry", "Orange", "grapes", "mangoes", "guava", "kiwi", "cherry", "blueberry", "Apricot"];
+
+// words that start with 'a'...
+const wordsstartingWithA = words.filter(word => word.toLowerCase().startsWith('a'));
+console.log("Words starting with 'a':" + wordsstartingWithA);
+// words containg 'rr'...
+const wordsContainingRR = words.filter(word => word.toLowerCase().includes('rr'));
+console.log("Words containing 'rr':" + wordsContainingRR);
+// words longer than 6 characters...
+const wordsLongerThan6 = words.filter(word => word.length > 6);
+console.log("Words longer than 6 characters:" + wordsLongerThan6);
+// words less than 6 characters...
+const wordsLessThan6 = words.filter(word => word.length <= 6);
+console.log("Words less than 6 characters:" + wordsLessThan6);
+// words starting with 'b'...
+const wordsstartingwithB = words.filter(word => word[0] === "b");
+console.log("Words starting with 'b':" + wordsstartingwithB);

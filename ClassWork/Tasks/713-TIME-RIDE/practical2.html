@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Calculator v2 - Interactive Form</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f9f9ff;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-calculate {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-calculate:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-reset {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-reset:hover {
+            background: #d0d0d0;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .receipt {
+            background: #f9f9f9;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .summary-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>💰 Expense Calculator v2</h1>
+            
+            <div class="error" id="errorMsg"></div>
+            
+            <div id="inputForm">
+                <div class="form-group">
+                    <label for="groceries">🛒 Groceries (₹)</label>
+                    <input type="number" id="groceries" placeholder="Enter amount" min="0" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="transport">🚗 Transportation (₹)</label>
+                    <input type="number" id="transport" placeholder="Enter amount" min="0" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="entertainment">🎬 Entertainment (₹)</label>
+                    <input type="number" id="entertainment" placeholder="Enter amount" min="0" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="utilities">⚡ Utilities (₹)</label>
+                    <input type="number" id="utilities" placeholder="Enter amount" min="0" step="0.01">
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-calculate" onclick="calculateExpenses()">Calculate Receipt</button>
+                    <button class="btn-reset" onclick="resetForm()">Reset</button>
+                </div>
+            </div>
+            
+            <div class="results" id="results">
+                <h2 style="margin-bottom: 20px; color: #333;">📋 Receipt & Summary</h2>
+                
+                <div class="receipt" id="receiptDisplay"></div>
+                
+                <div class="summary">
+                    <div class="summary-item">
+                        <div class="summary-label">Subtotal</div>
+                        <div class="summary-value" id="subtotalDisplay">₹0.00</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Total (with Tax)</div>
+                        <div class="summary-value" id="totalDisplay">₹0.00</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Highest Expense</div>
+                        <div class="summary-value" id="highestDisplay">N/A</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Daily Average</div>
+                        <div class="summary-value" id="averageDisplay">₹0.00</div>
+                    </div>
+                </div>
+                
+                <input type="text" id="textReceipt" placeholder="Receipt summary (auto-filled)" readonly style="background: #f9f9f9; color: #666;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateExpenses() {
+            // Get input values
+            const groceries = parseFloat(document.getElementById('groceries').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const entertainment = parseFloat(document.getElementById('entertainment').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+
+            // Validate input
+            if (groceries < 0 || transport < 0 || entertainment < 0 || utilities < 0) {
+                showError("Amounts cannot be negative!");
+                return;
+            }
+
+            if (groceries === 0 && transport === 0 && entertainment === 0 && utilities === 0) {
+                showError("Please enter at least one expense!");
+                return;
+            }
+
+            clearError();
+
+            // Calculate totals
+            const subtotal = groceries + transport + entertainment + utilities;
+            const taxRate = 0.05;
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+
+            // Find highest category
+            const expenses = [
+                { name: "Groceries", amount: groceries },
+                { name: "Transportation", amount: transport },
+                { name: "Entertainment", amount: entertainment },
+                { name: "Utilities", amount: utilities }
+            ];
+            const highest = expenses.reduce((prev, current) => 
+                (prev.amount > current.amount) ? prev : current
+            );
+
+            // Assuming 30-day month
+            const dailyAverage = total / 30;
+
+            // Build receipt
+            let receipt = "════════════════════════════════════════\n";
+            receipt += "         💳 EXPENSE RECEIPT              \n";
+            receipt += "════════════════════════════════════════\n\n";
+            receipt += "ITEMIZED EXPENSES:\n";
+            receipt += "────────────────────────────────────────\n";
+            receipt += `🛒 Groceries          : ₹${groceries.toFixed(2)}\n`;
+            receipt += `🚗 Transportation     : ₹${transport.toFixed(2)}\n`;
+            receipt += `🎬 Entertainment      : ₹${entertainment.toFixed(2)}\n`;
+            receipt += `⚡ Utilities          : ₹${utilities.toFixed(2)}\n`;
+            receipt += "────────────────────────────────────────\n";
+            receipt += `Subtotal              : ₹${subtotal.toFixed(2)}\n`;
+            receipt += `Tax (5%)              : ₹${tax.toFixed(2)}\n`;
+            receipt += "════════════════════════════════════════\n";
+            receipt += `TOTAL                 : ₹${total.toFixed(2)}\n`;
+            receipt += "════════════════════════════════════════\n";
+
+            // Display results
+            document.getElementById('receiptDisplay').textContent = receipt;
+            document.getElementById('subtotalDisplay').textContent = `₹${subtotal.toFixed(2)}`;
+            document.getElementById('totalDisplay').textContent = `₹${total.toFixed(2)}`;
+            document.getElementById('highestDisplay').textContent = `${highest.name} (₹${highest.amount.toFixed(2)})`;
+            document.getElementById('averageDisplay').textContent = `₹${dailyAverage.toFixed(2)}/day`;
+            document.getElementById('textReceipt').value = `Total: ₹${total.toFixed(2)} | Highest: ${highest.name}`;
+            
+            document.getElementById('results').classList.add('show');
+        }
+
+        function resetForm() {
+            document.getElementById('groceries').value = '';
+            document.getElementById('transport').value = '';
+            document.getElementById('entertainment').value = '';
+            document.getElementById('utilities').value = '';
+            document.getElementById('results').classList.remove('show');
+            clearError();
+            document.getElementById('groceries').focus();
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = msg;
+            errorDiv.classList.add('show');
+        }
+
+        function clearError() {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.classList.remove('show');
+        }
+
+        // Auto-focus first input on page load
+        window.onload = function() {
+            document.getElementById('groceries').focus();
+        };
+    </script>
+</body>
+</html>

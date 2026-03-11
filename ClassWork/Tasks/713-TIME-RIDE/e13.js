@@ -1,4 +1,4 @@
-//Method-1
+//Method-1 
 console.log("Method-1");
 const str = 'RaceCar';
 
@@ -77,3 +77,14 @@ function isPalindromeWithSpaces(str){
 
 
 console.log(`'A man a plan a canal Panama ? :' ${isPalindromeWithSpaces("A man a plan a canal Panama")}`)
+//Methord-5 using bilt in array methord..
+function ispalindrome(str){
+    let cleaned = str.toLowerCase().replace(/[ ]/g," ");
+
+    let reversed = cleaned.split(' ').reverse().join('');
+
+        return (reversed === cleaned);
+    
+}
+console.log("Methord 5: palindrome checker");
+console.log("Madam ", ispalindrome("Madam"));
