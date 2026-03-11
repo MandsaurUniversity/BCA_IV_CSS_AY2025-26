@@ -77,3 +77,24 @@ function isPalindromeWithSpaces(str){
 
 
 console.log(`'A man a plan a canal Panama ? :' ${isPalindromeWithSpaces("A man a plan a canal Panama")}`)
+
+//Method-5 using bilt-in array method...
+
+function ispalindrome(str){
+    //converting the string to lowercase and removing all the spaces..
+    let cleaned = str.toLowerCase().replace(/[ ]/g, "");
+
+    //Reverse the string and then check it with the 'cleaned' string
+    //How? split "str" into an array, reverse and then join back
+    let reversed = cleaned.split('').reverse().join('');
+
+    //Compare the cleaned string with the reverse srting
+    return (reversed === cleaned);
+
+}
+console.log("Method 5: Palindrome checker");
+console.log("Race Car :", ispalindrome("Race Car"));
+console.log("Race :", ispalindrome("Race"));
+
+
+
