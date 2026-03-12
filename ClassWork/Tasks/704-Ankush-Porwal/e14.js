@@ -1,6 +1,6 @@
 // Javascript Program to convert the First Letter of a string into Uppercase
 // Method 1: Manually, using substring operations
-const str = "java script";
+const str = "ankush porwal";
 // Store the First Char of String...
 const firstchar = str[0];
 // variable to store the equivalent uppercase letter...
