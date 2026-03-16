@@ -57,3 +57,39 @@ const uniqueUsingReduce = nums.reduce((acc,num)=> {
     return acc;
 },[]);
 console.log(uniqueUsingReduce);
+
+// Sorting array
+//number sort
+const numArr=[54,4,77,3,87,2,67,9];
+console.log("numbers befor sorted " + numArr);
+numArr.sort((a,b)=> a-b);
+console.log("numbers after sorted in ascending order : " + numArr);
+
+console.log("numbers befor sorted " + numArr);
+numArr.sort((a,b)=> b-a);
+console.log("numbers after sorted in descending order : " + numArr);
+
+//STRING SORT 
+const words = ["potato","Zebra","apple","mango","grapes"];
+console.log(words);
+const sword = words.sort();
+console.log(sword);
+//Case  Insensitive sorting
+const sortedWords =[...words].sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase));
+console.log(sortedWords);
+
+ //5. Sorting objects
+ const students = [
+    {name : "Rajat", marks :78 },
+    {name : "Sanjay", marks : 64},
+    {name : "Nilesh", marks :89 },
+    {name : "Akash", marks : 75},
+ ];
+ // sort by property 
+//Sort in ascending order (name)
+const byname = [...students].sort((a,b)=> (a.name).localeCompare(b.name));
+console.log(byname);
+
+//Sort in ascending order (number)
+const byMarks = [...students].sort((a,b)=> -a.marks + b.marks);
+console.log(byMarks);
