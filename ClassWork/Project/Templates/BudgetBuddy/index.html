@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetBuddy — Personal Finance Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+      <h1>BudgetBuddy</h1>
+      <p class="subtitle">Personal Finance Tracker</p>
+    </header>
+
+    <!-- ===== SUMMARY CARDS ===== -->
+    <section class="summary-section">
+      <div class="summary-card card-balance">
+        <span class="summary-label">Balance</span>
+        <span class="summary-value" id="balance">&#8377;0.00</span>
+      </div>
+      <div class="summary-card card-income">
+        <span class="summary-label">Income</span>
+        <span class="summary-value" id="total-income">&#8377;0.00</span>
+      </div>
+      <div class="summary-card card-expense">
+        <span class="summary-label">Expenses</span>
+        <span class="summary-value" id="total-expenses">&#8377;0.00</span>
+      </div>
+    </section>
+
+    <!-- ===== ADD TRANSACTION FORM ===== -->
+    <section class="form-section">
+      <h2>Add Transaction</h2>
+      <form id="transaction-form">
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Type</label>
+            <div class="type-toggle">
+              <label class="type-option">
+                <input type="radio" name="txn-type" value="income" checked>
+                <span class="type-badge type-income">Income</span>
+              </label>
+              <label class="type-option">
+                <input type="radio" name="txn-type" value="expense">
+                <span class="type-badge type-expense">Expense</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="txn-description">Description <span class="required">*</span></label>
+            <input type="text" id="txn-description" placeholder="e.g., Monthly salary" required>
+          </div>
+          <div class="form-group flex-1">
+            <label for="txn-amount">Amount (&#8377;) <span class="required">*</span></label>
+            <input type="number" id="txn-amount" placeholder="0.00" min="0.01" step="0.01" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="txn-category">Category</label>
+            <select id="txn-category">
+              <!-- Options populated dynamically by JavaScript -->
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="txn-date">Date <span class="required">*</span></label>
+            <input type="date" id="txn-date" required>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Add Transaction</button>
+          <span id="form-error" class="error-message"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===== FILTER / SORT CONTROLS ===== -->
+    <section class="controls-section">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-type="all">All</button>
+        <button class="filter-tab" data-type="income">Income</button>
+        <button class="filter-tab" data-type="expense">Expenses</button>
+      </div>
+      <div class="controls-right">
+        <select id="sort-select" class="sort-select">
+          <option value="date">Sort by Date</option>
+          <option value="amount">Sort by Amount</option>
+          <option value="description">Sort by Name</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ===== TRANSACTION LIST ===== -->
+    <section class="transaction-section">
+      <div id="transaction-list" class="transaction-list">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">💰</div>
+          <p>No transactions yet. Add your first transaction above!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DASHBOARD ===== -->
+    <section class="dashboard-section">
+      <h2>Spending Dashboard</h2>
+      <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+          <h3>Category Breakdown</h3>
+          <div id="category-breakdown" class="category-breakdown">
+            <p class="placeholder-text">Add expense transactions to see category breakdown.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Monthly Summary</h3>
+          <div id="monthly-summary" class="monthly-summary">
+            <p class="placeholder-text">Add transactions to see monthly summary.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
